@@ -10,14 +10,7 @@
           "customer_note": "",
           "seller_note": "",
           "start_at": "2020-11-26T13:00:00Z",
-          "appointment_segments": [
-            {
-              "duration_minutes": 60,
-              "service_variation_id": "RU3PBTZTK7DXZDQFCJHOK2MC",
-              "team_member_id": "TMXUrsBWWcHTt79t",
-              "service_variation_version": 1599775456731
-            }
-          ]
+          "end_at": "2020-11-26T13:00:00Z"
         },
         {
             "id": "tdegug1fqni3wh",
@@ -27,16 +20,7 @@
             "location_id": "LY6WNBPVM6VGV",
             "customer_id": "AY6WABPVG6VG1",
             "start_at": "2023-05-02T14:00:00Z",
-            "all_day": false,
-            "appointment_segments": [
-              {
-                "duration_minutes": 60,
-                "service_variation_id": "VG4FYBKK3UL6UITOEYQ6MFLS",
-                "team_member_id": "TMjiqI3PxyLMKr4k",
-                "service_variation_version": 1641341724039,
-                "any_team_member": false
-              }
-            ]
+            "all_day": false
         }
     ],
     "location": [
