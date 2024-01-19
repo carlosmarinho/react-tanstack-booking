@@ -1,11 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
-import { Button, Form, Input, Spin } from 'antd';
+import { Alert, Button, Form, Input, Spin } from 'antd';
 import { sendApiRequest } from '../../../helpers/sendApiRequest';
 import { ICreateBooking } from './ICreateBooking';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const CreateBooking = () => {
   const [form] = Form.useForm();
+  const [showSuccessMessage, setShowSuccessMessage] =
+    useState(false);
   const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (data: ICreateBooking) =>
       sendApiRequest(
@@ -15,12 +17,6 @@ const CreateBooking = () => {
       ),
   });
 
-  console.log(
-    '\n\n***\n isSuccesss: ',
-    isSuccess,
-    '\n***\n',
-  );
-
   useEffect(() => {
     if (isSuccess) {
       console.log(
@@ -28,8 +24,18 @@ const CreateBooking = () => {
         isSuccess,
         '\n***\n',
       );
+      setShowSuccessMessage(true);
       form.resetFields();
     }
+
+    const successTimeout = setTimeout(
+      () => setShowSuccessMessage(false),
+      3500,
+    );
+
+    return () => {
+      clearTimeout(successTimeout);
+    };
   }, [isSuccess]);
 
   const onFinish = (values: ICreateBooking) => {
@@ -40,6 +46,12 @@ const CreateBooking = () => {
   };
   return (
     <>
+      {showSuccessMessage && (
+        <Alert
+          message="Booking created successfully!"
+          type="success"
+        />
+      )}
       {isPending && (
         <Spin tip="Loading" size="large">
           <div className="content" />
