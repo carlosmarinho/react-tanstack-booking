@@ -1,6 +1,6 @@
 export interface ICreateBooking {
-  locationId: number;
-  customerId: number;
+  locationId: string;
+  customerId: string;
   startAt: Date;
   endAt: Date;
 }
