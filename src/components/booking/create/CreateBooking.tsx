@@ -63,28 +63,28 @@ const CreateBooking = () => {
         form={form}
       >
         <Form.Item
-          name="location_id"
+          name="locationId"
           label="Location"
           rules={[{ required: true }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          name="customer_id"
+          name="customerId"
           label="Customer"
           rules={[{ required: true }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          name="start_at"
+          name="startAt"
           label="Check-In"
           rules={[{ required: true }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          name="end_at"
+          name="endAt"
           label="Check-Out"
           rules={[{ required: true }]}
         >
