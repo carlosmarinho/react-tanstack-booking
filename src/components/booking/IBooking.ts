@@ -1,7 +1,7 @@
 export interface Ibooking {
   id: string;
-  locationId: number;
-  customerId: number;
+  location: string;
+  customerId: string;
   startAt: Date;
   endAt: Date;
 }

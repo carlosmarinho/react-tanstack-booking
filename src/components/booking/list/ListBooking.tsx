@@ -8,7 +8,7 @@ const ListBooking = () => {
     queryKey: ['booking'],
     queryFn: async () => {
       return await sendApiRequest<Ibooking[]>(
-        'https://65a48cf652f07a8b4a3d73c0.mockapi.io/booking',
+        '/bookings',
         'GET',
       );
     },
@@ -27,8 +27,8 @@ const ListBooking = () => {
         renderItem={(item) => (
           <List.Item>
             <List.Item.Meta
-              title={item.locationId}
-              description={item.customerId}
+              title={item.location}
+              description={`From: ${item.startAt} To: ${item.endAt}`}
             />
           </List.Item>
         )}

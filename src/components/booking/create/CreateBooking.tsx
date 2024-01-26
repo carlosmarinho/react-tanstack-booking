@@ -10,11 +10,7 @@ const CreateBooking = () => {
     useState(false);
   const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (data: ICreateBooking) =>
-      sendApiRequest(
-        'https://65a48cf652f07a8b4a3d73c0.mockapi.io/booking',
-        'POST',
-        data,
-      ),
+      sendApiRequest('/bookings', 'POST', data),
   });
 
   useEffect(() => {
