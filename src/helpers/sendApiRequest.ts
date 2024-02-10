@@ -45,3 +45,22 @@ export async function sendApiRequest<T>(
 
   return respData;
 }
+
+/**@todo for some reason strapi api don't return data and meta for user */
+export async function sendApiRequestforUser<T>(
+  url: string,
+  method: Method,
+  data: unknown = {},
+): Promise<T> {
+  const response = await fetch(
+    BASE_URL + url,
+    returnCorrectRequest(method, data),
+  );
+
+  if (!response.ok) {
+    const message = `An error has occured: ${response.status}`;
+    throw new Error(message);
+  }
+ 
+  return await response.json()
+}

@@ -1,13 +1,63 @@
-import { useMutation } from '@tanstack/react-query';
-import { Alert, Button, Form, Input, Spin } from 'antd';
-import { sendApiRequest } from '../../../helpers/sendApiRequest';
+import {
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
+import {
+  Alert,
+  Button,
+  Form,
+  Input,
+  Select,
+  Spin,
+} from 'antd';
+import {
+  sendApiRequest,
+  sendApiRequestforUser,
+} from '../../../helpers/sendApiRequest';
 import { ICreateBooking } from './ICreateBooking';
 import { useEffect, useState } from 'react';
+import { IUser } from '../../user/IUser';
+import { ILocation } from '../../location/ILocation';
+import { ICity } from '../../city/ICity';
 
 const CreateBooking = () => {
   const [form] = Form.useForm();
   const [showSuccessMessage, setShowSuccessMessage] =
     useState(false);
+
+  const { isLoading: loadingCustomers, data: customers } =
+    useQuery({
+      queryKey: ['customer'],
+      queryFn: async () => {
+        return await sendApiRequestforUser<IUser[]>(
+          '/users',
+          'GET',
+        );
+      },
+    });
+
+  const { isLoading: loadingCities, data: cities } =
+    useQuery({
+      queryKey: ['cities'],
+      queryFn: async () => {
+        return await sendApiRequest<ICity[]>(
+          '/cities',
+          'GET',
+        );
+      },
+    });
+
+  const { isLoading: loadingLocations, data: locations } =
+    useQuery({
+      queryKey: ['locations'],
+      queryFn: async () => {
+        return await sendApiRequest<ILocation[]>(
+          '/locations',
+          'GET',
+        );
+      },
+    });
+
   const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (data: ICreateBooking) =>
       sendApiRequest('/bookings', 'POST', data),
@@ -15,11 +65,6 @@ const CreateBooking = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(
-        '\n\n***\n vai resetar: ',
-        isSuccess,
-        '\n***\n',
-      );
       setShowSuccessMessage(true);
       form.resetFields();
     }
@@ -40,6 +85,13 @@ const CreateBooking = () => {
       form.resetFields();
     }
   };
+
+  console.log(
+    '\n\n***\n locations: ',
+    locations,
+    '\n***\n',
+  );
+
   return (
     <>
       {showSuccessMessage && (
@@ -59,18 +111,58 @@ const CreateBooking = () => {
         form={form}
       >
         <Form.Item
+          name="cityId"
+          label="City"
+          rules={[{ required: true }]}
+        >
+          {loadingCities ? (
+            <Spin tip="Loading" size="small">
+              <div className="content" />
+            </Spin>
+          ) : (
+            <Select
+              options={cities?.map((city) => ({
+                value: city.id,
+                label: city.name,
+              }))}
+            />
+          )}
+        </Form.Item>
+        <Form.Item
           name="locationId"
           label="Location"
           rules={[{ required: true }]}
         >
-          <Input />
+          {loadingLocations ? (
+            <Spin tip="Loading" size="small">
+              <div className="content" />
+            </Spin>
+          ) : (
+            <Select
+              options={locations?.map((location) => ({
+                value: location.id,
+                label: location.name,
+              }))}
+            />
+          )}
         </Form.Item>
         <Form.Item
           name="customerId"
           label="Customer"
           rules={[{ required: true }]}
         >
-          <Input />
+          {loadingCustomers ? (
+            <Spin tip="Loading" size="small">
+              <div className="content" />
+            </Spin>
+          ) : (
+            <Select
+              options={customers?.map((cust) => ({
+                value: cust.id,
+                label: cust.username,
+              }))}
+            />
+          )}
         </Form.Item>
         <Form.Item
           name="startAt"
