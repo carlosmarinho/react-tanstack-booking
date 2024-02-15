@@ -5,8 +5,8 @@ import {
 import {
   Alert,
   Button,
+  DatePicker,
   Form,
-  Input,
   Select,
   Spin,
 } from 'antd';
@@ -169,14 +169,20 @@ const CreateBooking = () => {
           label="Check-In"
           rules={[{ required: true }]}
         >
-          <Input />
+          <DatePicker
+            showTime
+            placeholder="Select Check-In"
+          />
         </Form.Item>
         <Form.Item
           name="endAt"
           label="Check-Out"
           rules={[{ required: true }]}
         >
-          <Input />
+          <DatePicker
+            showTime
+            placeholder="Select Check-Out"
+          />
         </Form.Item>
         <Button
           type="primary"
