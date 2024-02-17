@@ -1,7 +1,27 @@
 // import CreateBooking from '../components/booking/create/CreateBooking';
 // import ListBooking from '../components/booking/list/ListBooking';
 import { Layout, Menu, theme } from 'antd';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 const { Header, Content, Footer } = Layout;
+
+const StyledHeader = styled(Header)`
+  position: sticky;
+  top: 0;
+  zindex: 1;
+  width: 100%;
+  display: flex;
+  alignitems: center;
+  height: 400px;
+  padding-top: 10px;
+`;
+
+const ContainerMenu = styled.div`
+  display: flex;
+  width: 100%;
+  height: 60px;
+  margin-top: 10px;
+`;
 
 // const items = new Array(3).fill(null).map((_, index) => ({
 //   key: String(index + 1),
@@ -10,12 +30,16 @@ const { Header, Content, Footer } = Layout;
 
 const items = [
   {
+    key: 'hotels',
+    label: <Link to="/hotels">Hotels</Link>,
+  },
+  {
     key: 'register',
-    label: 'Register',
+    label: <Link to="/register">Register</Link>,
   },
   {
     key: 'signin',
-    label: 'Sign-In',
+    label: <Link to="/signin">Sign-In</Link>,
   },
 ];
 
@@ -26,36 +50,31 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <Header
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 1,
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          height: '400px',
-        }}
-      >
-        <div
-          className="demo-logo"
-          style={{
-            width: '120px',
-            minWidth: '120px',
-            height: '132px',
-            background: 'rgba(255,255,255,.2)',
-            borderRadius: '6px',
-            marginInlineEnd: '24px',
-          }}
-        />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['2']}
-          items={items}
-          style={{ flex: 1, minWidth: 0 }}
-        />
-      </Header>
+      <StyledHeader style={{}}>
+        <ContainerMenu>
+          <div
+            className="demo-logo"
+            style={{
+              width: '60px',
+              minWidth: '60px',
+              height: '60px',
+            }}
+          >
+            <img
+              src="/logo-my-booking-2.png"
+              alt="Logo My Booking"
+              width="60"
+            />
+          </div>
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={['2']}
+            items={items}
+            style={{ flex: 1, minWidth: 0 }}
+          />
+        </ContainerMenu>
+      </StyledHeader>
       <Content style={{ padding: '0 48px' }}>
         <div
           style={{
