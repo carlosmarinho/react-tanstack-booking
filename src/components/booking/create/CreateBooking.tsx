@@ -52,7 +52,7 @@ const CreateBooking = () => {
       queryKey: ['locations'],
       queryFn: async () => {
         return await sendApiRequest<ILocation[]>(
-          '/locations',
+          '/locations?populate=featuredImage,rooms',
           'GET',
         );
       },
