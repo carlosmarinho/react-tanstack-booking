@@ -86,12 +86,6 @@ const CreateBooking = () => {
     }
   };
 
-  console.log(
-    '\n\n***\n locations: ',
-    locations,
-    '\n***\n',
-  );
-
   return (
     <>
       {showSuccessMessage && (
