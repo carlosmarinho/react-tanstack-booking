@@ -10,6 +10,7 @@ import { sendApiRequest } from '../../helpers/sendApiRequest';
 import { ICity } from '../city/ICity';
 import { device } from '../../utils';
 import styled from 'styled-components';
+import { FC, useEffect, useState } from 'react';
 
 const { Item } = Form;
 
@@ -27,10 +28,6 @@ const FormWrapper = styled(Form)`
 const ItemWrapper = styled(Item)`
   margin-bottom: 12px;
   min-width: 200px;
-
-  @media ${device.mobileM} {
-    margin-bottom: 14px;
-  }
 
   @media ${device.tablet} {
     margin-bottom: 16px;
@@ -65,22 +62,33 @@ const StyledSelect = styled(Select)`
 `;
 
 const StyledButton = styled(Button)`
+  min-width: 200px;
   width: 100%;
-  @media ${device.tablet} {
-    width: 12%;
-    height: 40px;
+  &.ant-btn-primary:disabled {
+    background-color: #d9d9d9;
+    color: #ffffff;
   }
 
   @media ${device.tablet} {
+    min-width: initial;
     width: 12%;
+  }
+
+  @media ${device.laptop} {
     height: 40px;
   }
 `;
 
-const persons = [1, 2, 3, 4, 5];
+const adults = [1, 2, 3, 4, 5];
+const children = [0, 1, 2, 3, 4, 5];
 
-const SearchBar = () => {
+export interface ISearchBar {
+  onSearch: (values: any) => void;
+}
+
+const SearchBar: FC<ISearchBar> = ({ onSearch }) => {
   const [form] = Form.useForm();
+  const [submittable, setSubmittable] = useState(false);
 
   const { isLoading: loadingCities, data: cities } =
     useQuery({
@@ -93,10 +101,25 @@ const SearchBar = () => {
       },
     });
 
+  // Watch all values
+  const values = Form.useWatch([], form);
+
+  useEffect(() => {
+    form.validateFields({ validateOnly: true }).then(
+      () => {
+        setSubmittable(true);
+      },
+      () => {
+        setSubmittable(false);
+      },
+    );
+  }, [values]);
+
   return (
     <FormWrapper
       form={form}
       className="search-bar-container"
+      onFinish={onSearch}
     >
       {loadingCities ? (
         <Spin tip="Loading" size="small">
@@ -139,7 +162,7 @@ const SearchBar = () => {
       <ItemWrapper name="adult">
         <StyledSelect
           placeholder="Quantity Adult"
-          options={persons?.map((person) => ({
+          options={adults?.map((person) => ({
             value: person,
             label: person,
           }))}
@@ -148,13 +171,19 @@ const SearchBar = () => {
       <ItemWrapper name="children">
         <StyledSelect
           placeholder="Quantity Children"
-          options={persons?.map((person) => ({
+          options={children?.map((person) => ({
             value: person,
             label: person,
           }))}
         />
       </ItemWrapper>
-      <StyledButton type="primary">Search</StyledButton>
+      <StyledButton
+        type="primary"
+        htmlType="submit"
+        disabled={!submittable}
+      >
+        Search
+      </StyledButton>
     </FormWrapper>
   );
 };

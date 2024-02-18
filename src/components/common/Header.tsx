@@ -1,8 +1,9 @@
 import { Layout, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import SearchBar from './SearchBar';
+import SearchBar, { ISearchBar } from './SearchBar';
 import { device } from '../../utils';
+import { FC } from 'react';
 const { Header: HeaderAnt } = Layout;
 
 const StyledHeader = styled(HeaderAnt)`
@@ -32,7 +33,7 @@ const ContainerLogo = styled.div`
 
 const FeaturedText = styled.h2`
   text-align: center;
-  margin: 10px 0 0 0;
+  margin: 20px 0 0 0;
   color: #ffffff;
   font-size: 20px;
   min-width: 200px;
@@ -87,7 +88,7 @@ const rightItems = [
   },
 ];
 
-const Header = () => {
+const Header: FC<ISearchBar> = ({ onSearch }) => {
   return (
     <StyledHeader style={{}}>
       <ContainerNav>
@@ -125,7 +126,7 @@ const Header = () => {
       <FeaturedSubText>
         The best prices on hotels, homes and much more...
       </FeaturedSubText>
-      <SearchBar />
+      <SearchBar onSearch={onSearch} />
     </StyledHeader>
   );
 };

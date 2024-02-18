@@ -2,6 +2,7 @@ import { Layout, theme } from 'antd';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import styled from 'styled-components';
+import SearchResult from '../components/common/SearchResult';
 const { Content } = Layout;
 
 const MainContent = styled(Content)`
@@ -20,9 +21,13 @@ const HomePage = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const onFinish = (values: any) => {
+    console.log('Success:', values);
+  };
+
   return (
     <Layout>
-      <Header />
+      <Header onSearch={onFinish} />
       <MainContent style={{}}>
         <ContentWrapper
           style={{
@@ -30,7 +35,7 @@ const HomePage = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Content
+          <SearchResult />
         </ContentWrapper>
       </MainContent>
       <Footer />
