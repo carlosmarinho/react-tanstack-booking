@@ -12,7 +12,7 @@ const MainContent = styled(Content)`
 
 const ContentWrapper = styled.div`
   padding: 24px;
-  min-height: 450px;
+  min-height: 550px;
   min-width: 200px;
 `;
 

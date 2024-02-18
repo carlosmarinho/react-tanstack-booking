@@ -1,23 +1,37 @@
 import { useQuery } from '@tanstack/react-query';
 import { IRoom } from '../rooms/IRoom';
 import { sendApiRequest } from '../../helpers/sendApiRequest';
-import { List, Space } from 'antd';
-import { createElement } from 'react';
+
 import {
   LikeOutlined,
   MessageOutlined,
-  StarOutlined,
+  StarTwoTone,
+  HeartOutlined,
 } from '@ant-design/icons';
+import React, { useState } from 'react';
+import {
+  Avatar,
+  List,
+  Space,
+  Spin,
+  Typography,
+} from 'antd';
+import { ILocation } from '../location/ILocation';
+import { getIMageFromData } from '../../helpers/getImageFromData';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
-const data = Array.from({ length: 23 }).map((_, i) => ({
-  href: 'https://ant.design',
-  title: `ant design part ${i}`,
-  avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
-  description:
-    'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-  content:
-    'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-}));
+const { Paragraph, Text } = Typography;
+
+const FeaturedHotel = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const TopIMage = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 const IconText = ({
   icon,
@@ -27,74 +41,121 @@ const IconText = ({
   text: string;
 }) => (
   <Space>
-    {createElement(icon)}
+    {React.createElement(icon)}
     {text}
   </Space>
 );
 
 const SearchResult = () => {
-  const { isLoading, data: rooms } = useQuery({
+  const [ellipsis, setEllipsis] = useState(true);
+  const { isLoading, data: locations } = useQuery({
     queryKey: ['rooms'],
     queryFn: async () => {
-      return await sendApiRequest<IRoom[]>('/rooms', 'GET');
+      return await sendApiRequest<ILocation[]>(
+        '/locations?populate=*',
+        'GET',
+      );
     },
   });
+
+  console.log('\n\n***\n rooms: ', locations, '\n***\n');
 
   return (
     <>
       <h2>Search Results</h2>
-      <List
-        itemLayout="vertical"
-        size="large"
-        pagination={{
-          onChange: (page) => {
-            console.log(page);
-          },
-          pageSize: 3,
-        }}
-        dataSource={data}
-        footer={
-          <div>
-            <b>ant design</b> footer part
-          </div>
-        }
-        renderItem={(item) => (
-          <List.Item
-            key={item.title}
-            actions={[
-              <IconText
-                icon={StarOutlined}
-                text="156"
-                key="list-vertical-star-o"
-              />,
-              <IconText
-                icon={LikeOutlined}
-                text="156"
-                key="list-vertical-like-o"
-              />,
-              <IconText
-                icon={MessageOutlined}
-                text="2"
-                key="list-vertical-message"
-              />,
-            ]}
-            extra={
-              <img
-                width={272}
-                alt="logo"
-                src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-              />
-            }
-          >
-            <List.Item.Meta
-              avatar={<Avatar src={item.avatar} />}
-              title={<a href={item.href}>{item.title}</a>}
-              description={item.description}
-            />
-            {item.content}
-          </List.Item>
-        )}
-      />
+      {isLoading && (
+        <Spin tip="Loading" size="large">
+          <div className="content" />
+        </Spin>
+      )}
+      {locations && (
+        <List
+          itemLayout="vertical"
+          size="large"
+          pagination={{
+            onChange: (page) => {
+              console.log(page);
+            },
+            pageSize: 5,
+          }}
+          dataSource={locations}
+          renderItem={(item) => {
+            return (
+              <List.Item
+                key={item.id}
+                actions={[
+                  <IconText
+                    icon={HeartOutlined}
+                    text="156"
+                    key="list-vertical-heart-o"
+                  />,
+                  <IconText
+                    icon={LikeOutlined}
+                    text="156"
+                    key="list-vertical-like-o"
+                  />,
+                  <IconText
+                    icon={MessageOutlined}
+                    text="2"
+                    key="list-vertical-message"
+                  />,
+                ]}
+                extra={
+                  <FeaturedHotel>
+                    <TopIMage>
+                      <Text>{item.city?.data.name}</Text>
+                      <div>
+                        {[...Array(item.rating)].map(
+                          (rate) => (
+                            <StarTwoTone
+                              key={rate}
+                              twoToneColor="yellow"
+                            />
+                          ),
+                        )}
+                      </div>
+                    </TopIMage>
+                    <img
+                      width={300}
+                      alt="logo"
+                      src={getIMageFromData(
+                        item?.featuredImage.data,
+                      )}
+                    />
+                  </FeaturedHotel>
+                }
+              >
+                <List.Item.Meta
+                  // avatar={<Avatar src={item.avatar} />}
+                  title={
+                    <Link to={`/location/${item.id}`}>
+                      {item.name}
+                    </Link>
+                  }
+                  description={
+                    <Paragraph
+                      ellipsis={
+                        ellipsis
+                          ? {
+                              rows: 2,
+                              expandable: true,
+                              symbol: 'more',
+                            }
+                          : false
+                      }
+                    >
+                      {item.description}
+                    </Paragraph>
+                  }
+                />
+                <h5>Rooms</h5>
+
+                {item.description}
+              </List.Item>
+            );
+          }}
+        />
+      )}
     </>
   );
 };

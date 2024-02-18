@@ -9,11 +9,10 @@ const { Header: HeaderAnt } = Layout;
 const StyledHeader = styled(HeaderAnt)`
   position: sticky;
   top: 0;
-  zindex: 1;
+  z-index: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
-  alignitems: center;
   height: 400px;
   padding-top: 10px;
 `;
