@@ -1,7 +1,19 @@
 import { Layout, theme } from 'antd';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
+import styled from 'styled-components';
 const { Content } = Layout;
+
+const MainContent = styled(Content)`
+  min-width: 296px;
+  padding: 0 48px;
+`;
+
+const ContentWrapper = styled.div`
+  padding: 24px;
+  min-height: 450px;
+  min-width: 200px;
+`;
 
 const HomePage = () => {
   const {
@@ -11,18 +23,16 @@ const HomePage = () => {
   return (
     <Layout>
       <Header />
-      <Content style={{ padding: '0 48px' }}>
-        <div
+      <MainContent style={{}}>
+        <ContentWrapper
           style={{
-            padding: 24,
-            minHeight: 380,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
         >
           Content
-        </div>
-      </Content>
+        </ContentWrapper>
+      </MainContent>
       <Footer />
     </Layout>
   );
