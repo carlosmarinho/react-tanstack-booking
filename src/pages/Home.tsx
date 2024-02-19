@@ -2,7 +2,7 @@ import { Layout, theme } from 'antd';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import styled from 'styled-components';
-import SearchResult from '../components/common/SearchResult';
+import SearchResult from '../components/common/Result/SearchResult';
 const { Content } = Layout;
 
 const MainContent = styled(Content)`

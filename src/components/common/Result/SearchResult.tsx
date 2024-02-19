@@ -1,25 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
-import { sendApiRequest } from '../../helpers/sendApiRequest';
-
-import {
-  LikeOutlined,
-  MessageOutlined,
-  StarTwoTone,
-  HeartOutlined,
-} from '@ant-design/icons';
-import React, { createElement, FC } from 'react';
+import { sendApiRequest } from '../../../helpers/sendApiRequest';
 import {
   Button,
   Divider,
   List,
-  Space,
   Spin,
   Typography,
 } from 'antd';
-import { ILocation } from '../location/ILocation';
-import { getIMageFromData } from '../../helpers/getImageFromData';
+import { ILocation } from '../../location/ILocation';
+import { getIMageFromData } from '../../../helpers/getImageFromData';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import ActionItems from './ActionItems';
+import RightCard from './RightCard';
 
 const { Paragraph, Text } = Typography;
 
@@ -46,16 +39,6 @@ const ResultsWrapper = styled.div`
   .ant-divider {
     margin: 20px 0;
   }
-`;
-
-const FeaturedHotel = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const TopIMage = styled.div`
-  display: flex;
-  justify-content: space-between;
 `;
 
 const RoomWrapper = styled.div`
@@ -95,19 +78,6 @@ const ButtonBar = styled.div`
   }
 `;
 
-const IconText = ({
-  icon,
-  text,
-}: {
-  icon: FC;
-  text: string;
-}) => (
-  <Space>
-    {createElement(icon)}
-    {text}
-  </Space>
-);
-
 const SearchResult = () => {
   const ellipsis = true;
   const { isLoading, data: locations } = useQuery({
@@ -119,8 +89,6 @@ const SearchResult = () => {
       );
     },
   });
-
-  console.log('\n\n***\n rooms: ', locations, '\n***\n');
 
   return (
     <ResultsWrapper>
@@ -153,44 +121,13 @@ const SearchResult = () => {
             return (
               <List.Item
                 key={id}
-                actions={[
-                  <IconText
-                    icon={HeartOutlined}
-                    text="156"
-                    key="list-vertical-heart-o"
-                  />,
-                  <IconText
-                    icon={LikeOutlined}
-                    text="156"
-                    key="list-vertical-like-o"
-                  />,
-                  <IconText
-                    icon={MessageOutlined}
-                    text="2"
-                    key="list-vertical-message"
-                  />,
-                ]}
+                actions={ActionItems}
                 extra={
-                  <FeaturedHotel>
-                    <TopIMage>
-                      <Text>{city?.data.name}</Text>
-                      <div>
-                        {[...Array(rating)].map((rate) => (
-                          <StarTwoTone
-                            key={rate}
-                            twoToneColor="yellow"
-                          />
-                        ))}
-                      </div>
-                    </TopIMage>
-                    <img
-                      width={300}
-                      alt="logo"
-                      src={getIMageFromData(
-                        featuredImage?.data,
-                      )}
-                    />
-                  </FeaturedHotel>
+                  <RightCard
+                    name={city?.data.name}
+                    rating={rating}
+                    image={featuredImage?.data}
+                  />
                 }
               >
                 <h3>
@@ -212,11 +149,6 @@ const SearchResult = () => {
 
                 <RoomWrapper>
                   {rooms?.data.map((room) => {
-                    console.log(
-                      '\n\n***\n room: ',
-                      room,
-                      '\n***\n',
-                    );
                     return (
                       <>
                         <RoomImageWrapper>
