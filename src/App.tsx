@@ -9,6 +9,7 @@ import {
   Routes,
 } from 'react-router-dom';
 import HomePage from './pages/Home';
+import ReservePage from './pages/Reserve';
 import HomePageAdmin from './pages/admin/Home';
 
 const queryClient = new QueryClient();
@@ -19,6 +20,10 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route
+            path="/reserve/:roomId"
+            element={<ReservePage />}
+          />
           <Route
             path="/admin/"
             element={<HomePageAdmin />}

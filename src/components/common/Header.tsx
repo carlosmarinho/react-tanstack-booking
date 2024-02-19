@@ -6,14 +6,16 @@ import { device } from '../../utils';
 import { FC } from 'react';
 const { Header: HeaderAnt } = Layout;
 
-const StyledHeader = styled(HeaderAnt)`
+const StyledHeader = styled(HeaderAnt)<{
+  showSearchBar: boolean;
+}>`
   position: sticky;
   top: 0;
   z-index: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: ${(p) => (p.showSearchBar ? '400px' : '100px')};
   padding-top: 10px;
 `;
 
@@ -87,16 +89,25 @@ const rightItems = [
   },
 ];
 
-const Header: FC<ISearchBar> = ({ onSearch }) => {
+interface IHeader extends ISearchBar {
+  showSearchBar?: boolean;
+}
+
+const Header: FC<IHeader> = ({
+  onSearch,
+  showSearchBar = true,
+}) => {
   return (
-    <StyledHeader style={{}}>
+    <StyledHeader showSearchBar={showSearchBar}>
       <ContainerNav>
         <ContainerLogo className="demo-logo" style={{}}>
-          <img
-            src="/logo-my-booking-2.png"
-            alt="Logo My Booking"
-            width="60"
-          />
+          <Link to="/">
+            <img
+              src="/logo-my-booking-2.png"
+              alt="Logo My Booking"
+              width="60"
+            />
+          </Link>
         </ContainerLogo>
 
         {/**@todo was getting a problem overriding Menu
@@ -125,7 +136,7 @@ const Header: FC<ISearchBar> = ({ onSearch }) => {
       <FeaturedSubText>
         The best prices on hotels, homes and much more...
       </FeaturedSubText>
-      <SearchBar onSearch={onSearch} />
+      {showSearchBar && <SearchBar onSearch={onSearch} />}
     </StyledHeader>
   );
 };

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { sendApiRequest } from '../../../helpers/sendApiRequest';
+import { sendApiRequest } from '../../helpers/sendApiRequest';
 import {
   Button,
   Divider,
@@ -7,8 +7,8 @@ import {
   Spin,
   Typography,
 } from 'antd';
-import { ILocation } from '../../location/ILocation';
-import { getIMageFromData } from '../../../helpers/getImageFromData';
+import { ILocation } from '../location/ILocation';
+import { getIMageFromData } from '../../helpers/getImageFromData';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import ActionItems from './ActionItems';
@@ -81,7 +81,7 @@ const ButtonBar = styled.div`
 const SearchResult = () => {
   const ellipsis = true;
   const { isLoading, data: locations } = useQuery({
-    queryKey: ['rooms'],
+    queryKey: ['locations'],
     queryFn: async () => {
       return await sendApiRequest<ILocation[]>(
         '/locations?populate=*',

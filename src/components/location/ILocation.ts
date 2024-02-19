@@ -1,5 +1,5 @@
 import { ICity } from '../city/ICity';
-import { IRoom } from '../rooms/IRoom';
+import { IRoom } from '../room/IRoom';
 
 export interface IImage {
   ext: '.jpg';

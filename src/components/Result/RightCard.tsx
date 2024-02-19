@@ -1,9 +1,9 @@
 import { StarTwoTone } from '@ant-design/icons';
 import { Typography } from 'antd';
-import { getIMageFromData } from '../../../helpers/getImageFromData';
+import { getIMageFromData } from '../../helpers/getImageFromData';
 import styled from 'styled-components';
 import { FC } from 'react';
-import { IImage } from '../../location/ILocation';
+import { IImage } from '../location/ILocation';
 
 const { Text } = Typography;
 

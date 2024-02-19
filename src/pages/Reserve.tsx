@@ -2,7 +2,7 @@ import { Layout } from 'antd';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import styled from 'styled-components';
-import SearchResult from '../components/Result/SearchResult';
+import Reserve from '../components/Reserve/Reserve';
 const { Content } = Layout;
 
 const MainContent = styled(Content)`
@@ -18,17 +18,17 @@ const ContentWrapper = styled.div`
   border-radius: 8;
 `;
 
-const HomePage = () => {
+const ReservePage = () => {
   const onFinish = (values: any) => {
     console.log('Success:', values);
   };
 
   return (
     <Layout>
-      <Header onSearch={onFinish} />
+      <Header onSearch={onFinish} showSearchBar={false} />
       <MainContent>
         <ContentWrapper>
-          <SearchResult />
+          <Reserve />
         </ContentWrapper>
       </MainContent>
       <Footer />
@@ -36,4 +36,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default ReservePage;

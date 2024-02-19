@@ -5,7 +5,7 @@ export interface IRoom {
   featureImage: { data: IImage };
   name: string;
   description: string;
-  location: ILocation;
+  location?: { data: ILocation };
   rate: number;
   guests: number;
 }
