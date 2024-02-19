@@ -25,7 +25,7 @@ export interface ILocation {
   city?: { data: ICity };
   featuredImage: { data: IImage };
   galleryImages?: { data: IImage[] };
-  rooms?: IRoom[];
+  rooms?: { data: IRoom[] };
   rating: number;
   website: string;
   createdAt: Date;

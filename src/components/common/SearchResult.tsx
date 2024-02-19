@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { IRoom } from '../rooms/IRoom';
 import { sendApiRequest } from '../../helpers/sendApiRequest';
 
 import {
@@ -8,9 +7,10 @@ import {
   StarTwoTone,
   HeartOutlined,
 } from '@ant-design/icons';
-import React, { useState } from 'react';
+import React, { createElement, FC } from 'react';
 import {
-  Avatar,
+  Button,
+  Divider,
   List,
   Space,
   Spin,
@@ -23,6 +23,31 @@ import styled from 'styled-components';
 
 const { Paragraph, Text } = Typography;
 
+const ResultsWrapper = styled.div`
+  h3 {
+    margin-top: 0;
+  }
+
+  h4 {
+    margin: 10px 0;
+  }
+
+  li.ant-list-item {
+    margin-bottom: 20px;
+    border: 1px solid #cecece;
+  }
+
+  .ant-list-vertical .ant-list-item .ant-list-item-action {
+    justify-content: center;
+    display: flex;
+    margin-block-start: 0px;
+  }
+
+  .ant-divider {
+    margin: 20px 0;
+  }
+`;
+
 const FeaturedHotel = styled.div`
   display: flex;
   flex-direction: column;
@@ -33,21 +58,58 @@ const TopIMage = styled.div`
   justify-content: space-between;
 `;
 
+const RoomWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const RoomImageWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 20px;
+
+  img {
+    margin-right: 20px;
+  }
+
+  h5 {
+    margin: 0 0 10px 0;
+  }
+
+  .ant-typography {
+    margin-bottom: 0;
+  }
+`;
+
+const ButtonBar = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 20px;
+
+  .ant-typography {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+`;
+
 const IconText = ({
   icon,
   text,
 }: {
-  icon: React.FC;
+  icon: FC;
   text: string;
 }) => (
   <Space>
-    {React.createElement(icon)}
+    {createElement(icon)}
     {text}
   </Space>
 );
 
 const SearchResult = () => {
-  const [ellipsis, setEllipsis] = useState(true);
+  const ellipsis = true;
   const { isLoading, data: locations } = useQuery({
     queryKey: ['rooms'],
     queryFn: async () => {
@@ -61,7 +123,7 @@ const SearchResult = () => {
   console.log('\n\n***\n rooms: ', locations, '\n***\n');
 
   return (
-    <>
+    <ResultsWrapper>
       <h2>Search Results</h2>
       {isLoading && (
         <Spin tip="Loading" size="large">
@@ -79,10 +141,18 @@ const SearchResult = () => {
             pageSize: 5,
           }}
           dataSource={locations}
-          renderItem={(item) => {
+          renderItem={({
+            id,
+            name,
+            description,
+            city,
+            rating,
+            rooms,
+            featuredImage,
+          }) => {
             return (
               <List.Item
-                key={item.id}
+                key={id}
                 actions={[
                   <IconText
                     icon={HeartOutlined}
@@ -103,60 +173,103 @@ const SearchResult = () => {
                 extra={
                   <FeaturedHotel>
                     <TopIMage>
-                      <Text>{item.city?.data.name}</Text>
+                      <Text>{city?.data.name}</Text>
                       <div>
-                        {[...Array(item.rating)].map(
-                          (rate) => (
-                            <StarTwoTone
-                              key={rate}
-                              twoToneColor="yellow"
-                            />
-                          ),
-                        )}
+                        {[...Array(rating)].map((rate) => (
+                          <StarTwoTone
+                            key={rate}
+                            twoToneColor="yellow"
+                          />
+                        ))}
                       </div>
                     </TopIMage>
                     <img
                       width={300}
                       alt="logo"
                       src={getIMageFromData(
-                        item?.featuredImage.data,
+                        featuredImage?.data,
                       )}
                     />
                   </FeaturedHotel>
                 }
               >
-                <List.Item.Meta
-                  // avatar={<Avatar src={item.avatar} />}
-                  title={
-                    <Link to={`/location/${item.id}`}>
-                      {item.name}
-                    </Link>
+                <h3>
+                  <Link to={`/location/${id}`}>{name}</Link>
+                </h3>
+                <Paragraph
+                  ellipsis={
+                    ellipsis
+                      ? {
+                          rows: 2,
+                          expandable: true,
+                          symbol: 'more',
+                        }
+                      : false
                   }
-                  description={
-                    <Paragraph
-                      ellipsis={
-                        ellipsis
-                          ? {
-                              rows: 2,
-                              expandable: true,
-                              symbol: 'more',
-                            }
-                          : false
-                      }
-                    >
-                      {item.description}
-                    </Paragraph>
-                  }
-                />
-                <h5>Rooms</h5>
+                >
+                  {description}
+                </Paragraph>
 
-                {item.description}
+                <RoomWrapper>
+                  {rooms?.data.map((room) => {
+                    console.log(
+                      '\n\n***\n room: ',
+                      room,
+                      '\n***\n',
+                    );
+                    return (
+                      <>
+                        <RoomImageWrapper>
+                          <img
+                            width={60}
+                            height={60}
+                            alt={`Room: ${room.name}`}
+                            src={
+                              room.featureImage
+                                ? getIMageFromData(
+                                    room.featureImage?.data,
+                                  )
+                                : '/bed.png'
+                            }
+                          />
+                          <div>
+                            <h4>
+                              {room.name} ( {room.guests}{' '}
+                              Max Guests )
+                            </h4>
+                            <Paragraph
+                              ellipsis={
+                                ellipsis
+                                  ? {
+                                      rows: 2,
+                                      expandable: true,
+                                      symbol: 'more',
+                                    }
+                                  : false
+                              }
+                            >
+                              {room.description}
+                            </Paragraph>
+                          </div>
+                        </RoomImageWrapper>
+                        <ButtonBar>
+                          <Text>1 night</Text>
+                          <Text strong>${room.rate}</Text>
+                          <Link to={`/reserve/${room.id}`}>
+                            <Button danger>Reserve</Button>
+                          </Link>
+                        </ButtonBar>
+                        <Divider />
+                      </>
+                    );
+                  })}
+                </RoomWrapper>
               </List.Item>
             );
           }}
         />
       )}
-    </>
+    </ResultsWrapper>
   );
 };
 
