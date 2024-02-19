@@ -132,11 +132,16 @@ const Header: FC<IHeader> = ({
           }}
         />
       </ContainerNav>
-      <FeaturedText>Find your next travel</FeaturedText>
-      <FeaturedSubText>
-        The best prices on hotels, homes and much more...
-      </FeaturedSubText>
-      {showSearchBar && <SearchBar onSearch={onSearch} />}
+      {showSearchBar && (
+        <>
+          <FeaturedText>Find your next travel</FeaturedText>
+          <FeaturedSubText>
+            The best prices on hotels, homes and much
+            more...
+          </FeaturedSubText>
+          <SearchBar onSearch={onSearch} />
+        </>
+      )}
     </StyledHeader>
   );
 };

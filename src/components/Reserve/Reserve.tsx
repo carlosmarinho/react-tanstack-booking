@@ -2,16 +2,22 @@ import { useQuery } from '@tanstack/react-query';
 import { sendApiRequest } from '../../helpers/sendApiRequest';
 import { IRoom } from '../room/IRoom';
 import {
-  Avatar,
   Button,
   Card,
+  DatePicker,
+  DatePickerProps,
+  Select,
   Spin,
   Typography,
 } from 'antd';
 import { useParams } from 'react-router-dom';
 import { getIMageFromData } from '../../helpers/getImageFromData';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Dayjs } from 'dayjs';
+import { adultsArray, childrenArray } from '../../utils';
+
+const { Paragraph, Text } = Typography;
 
 const StyledCard = styled(Card)`
   .ant-card-cover img {
@@ -22,23 +28,93 @@ const StyledCard = styled(Card)`
 const RoomWrapper = styled.div`
   display: flex;
   img {
-    width: 120px;
+    width: 200px;
   }
 `;
 
-const { Paragraph, Text } = Typography;
-const { Meta } = Card;
+const ListRooms = styled.ul`
+  li {
+    margin-bottom: 10px;
+  }
+`;
+
+const LabelChildren = styled(Text)`
+  margin-left: 40px;
+`;
+
+const LabelTo = styled(Text)`
+  margin-left: 50px;
+`;
 
 const Reserve = () => {
-  const { roomId } = useParams();
-  const [ellipsis, setEllipsis] = useState(true);
+  const {
+    roomId,
+    checkIn: strCheckIn,
+    checkOut: strCheckOut,
+    adults: strAdults = '0',
+    children: strChildren = '0',
+  } = useParams();
+  const ellipsis = true;
   const [night, setNight] = useState(0);
+  const [totalGuests, setTotalGuests] = useState(
+    parseInt(strAdults) + parseInt(strChildren),
+  );
+  const [checkIn, setCheckIn] = useState<Dayjs | null>(
+    strCheckIn ? new Dayjs(strCheckIn) : null,
+  );
+  const [checkOut, setCheckOut] = useState<Dayjs | null>(
+    strCheckOut ? new Dayjs(strCheckOut) : null,
+  );
+  const [adults, setAdults] = useState(strAdults);
+  const [children, setChildren] = useState(strChildren);
+
+  const handleCheckIn: DatePickerProps['onChange'] = (
+    date,
+  ) => {
+    setCheckIn(date);
+  };
+
+  const handleCheckOut: DatePickerProps['onChange'] = (
+    date,
+  ) => {
+    setCheckOut(date);
+  };
+
+  const handleChangeAdult = (value: string) => {
+    setAdults(value);
+  };
+
+  const handleChangeChildren = (value: string) => {
+    setChildren(value);
+  };
+
+  useEffect(() => {
+    if (checkIn && checkOut) {
+      const hours = checkOut.diff(checkIn, 'hours');
+      const days = Math.floor(hours / 24);
+      setNight(days);
+    }
+  }, [checkIn, checkOut]);
+
+  useEffect(() => {
+    if (adults) {
+      setTotalGuests(parseInt(adults) + parseInt(children));
+    }
+  }, [adults, children]);
+
+  const canReserve = () => {
+    console.log(
+      '\n\n***\n ttotallldd: ',
+      totalGuests,
+      '\n***\n',
+    );
+    return night > 0 && totalGuests > 0;
+  };
 
   const { isLoading, data: room } = useQuery({
     queryKey: ['room'],
     queryFn: async () => {
       return await sendApiRequest<IRoom>(
-        // `/rooms?filters[id][$eq]=${roomId}&populate[location][populate][0]=featuredImage`,
         `/rooms/${roomId}?populate[location][populate][0]=featuredImage`,
         'GET',
       );
@@ -46,13 +122,6 @@ const Reserve = () => {
   });
 
   const { data: location } = room?.location || {};
-
-  console.log(
-    '\n\n***\n room: ',
-    room,
-    room?.location,
-    '\n***\n',
-  );
 
   return (
     <>
@@ -67,13 +136,21 @@ const Reserve = () => {
           cover={
             <img
               alt={`Location ${location.name}`}
-              src={getIMageFromData(
-                location.featuredImage.data,
-              )}
+              src={
+                location.featuredImage.data
+                  ? getIMageFromData(
+                      location.featuredImage.data,
+                    )
+                  : '/location-default.jpg'
+              }
             />
           }
           actions={[
-            <Button danger key="reserva">
+            <Button
+              danger
+              key="reserva"
+              disabled={!canReserve()}
+            >
               Confirm Reservation
             </Button>,
           ]}
@@ -92,7 +169,10 @@ const Reserve = () => {
           >
             {location.description}
           </Paragraph>
-          <h4>Room to Reserve: {room?.name}</h4>
+          <h4>
+            Room to Reserve: {room?.name} ( {room?.guests}{' '}
+            Max Guests )
+          </h4>
           <RoomWrapper>
             <img
               src={
@@ -104,15 +184,50 @@ const Reserve = () => {
               }
               alt={`Room image: ${room?.name}`}
             />
-            <ul>
-              <li>From: To: </li>
-              <li>Total Nights: {night}</li>
-              <li>1 Night: ${room?.rate}</li>
+            <ListRooms>
               <li>
-                Total: $
+                From:{' '}
+                <DatePicker
+                  onChange={handleCheckIn}
+                  placeholder="Select your Check-In"
+                />
+                <LabelTo>To: </LabelTo>
+                <DatePicker
+                  onChange={handleCheckOut}
+                  placeholder="Select your Check-Out"
+                />
+              </li>
+              <li>
+                Adults:
+                <Select
+                  onChange={handleChangeAdult}
+                  placeholder="Quantity Adult"
+                  options={adultsArray?.map((person) => ({
+                    value: person,
+                    label: person,
+                  }))}
+                />
+                <LabelChildren>Children: </LabelChildren>
+                <Select
+                  onChange={handleChangeChildren}
+                  placeholder="Quantity Adult"
+                  options={childrenArray?.map((person) => ({
+                    value: person,
+                    label: person,
+                  }))}
+                />
+              </li>
+              <li>Total Guests: {totalGuests}</li>
+              <li>
+                Price for 1 Night at this room: $
+                {room?.rate}
+              </li>
+              <li>Total Nights selected: {night}</li>
+              <li>
+                Total Reservation: $
                 {room?.rate ? room.rate * night : '0'}
               </li>
-            </ul>
+            </ListRooms>
           </RoomWrapper>
         </StyledCard>
       )}

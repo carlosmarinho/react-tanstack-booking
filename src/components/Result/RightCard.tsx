@@ -40,8 +40,12 @@ const RightCard: FC<IRightCard> = ({
       </TopIMage>
       <img
         width={300}
-        alt="logo"
-        src={getIMageFromData(image)}
+        alt={`Image Location - ${name}`}
+        src={
+          image
+            ? getIMageFromData(image)
+            : '/location-default.jpg'
+        }
       />
     </FeaturedHotel>
   );

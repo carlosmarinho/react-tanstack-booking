@@ -8,7 +8,11 @@ import {
 } from 'antd';
 import { sendApiRequest } from '../../helpers/sendApiRequest';
 import { ICity } from '../city/ICity';
-import { device } from '../../utils';
+import {
+  adultsArray,
+  childrenArray,
+  device,
+} from '../../utils';
 import styled from 'styled-components';
 import { FC, useEffect, useState } from 'react';
 
@@ -78,9 +82,6 @@ const StyledButton = styled(Button)`
     height: 40px;
   }
 `;
-
-const adults = [1, 2, 3, 4, 5];
-const children = [0, 1, 2, 3, 4, 5];
 
 export interface ISearchBar {
   onSearch: (values: any) => void;
@@ -156,7 +157,7 @@ const SearchBar: FC<ISearchBar> = ({ onSearch }) => {
       <ItemWrapper name="adult">
         <StyledSelect
           placeholder="Quantity Adult"
-          options={adults?.map((person) => ({
+          options={adultsArray?.map((person) => ({
             value: person,
             label: person,
           }))}
@@ -165,7 +166,7 @@ const SearchBar: FC<ISearchBar> = ({ onSearch }) => {
       <ItemWrapper name="children">
         <StyledSelect
           placeholder="Quantity Children"
-          options={children?.map((person) => ({
+          options={childrenArray?.map((person) => ({
             value: person,
             label: person,
           }))}

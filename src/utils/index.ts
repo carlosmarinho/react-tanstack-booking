@@ -18,3 +18,6 @@ export const device = {
   desktop: `(min-width: ${size.desktop})`,
   desktopL: `(min-width: ${size.desktop})`,
 };
+
+export const adultsArray = [1, 2, 3, 4, 5];
+export const childrenArray = [0, 1, 2, 3, 4, 5];
