@@ -145,19 +145,13 @@ const SearchBar: FC<ISearchBar> = ({ onSearch }) => {
         name="startAt"
         rules={[{ required: true }]}
       >
-        <StyledDatePicker
-          showTime
-          placeholder="Select your Check-In"
-        />
+        <StyledDatePicker placeholder="Select your Check-In" />
       </ItemWrapper>
       <ItemWrapper
         name="endAt"
         rules={[{ required: true }]}
       >
-        <StyledDatePicker
-          showTime
-          placeholder="Select your Check-Out"
-        />
+        <StyledDatePicker placeholder="Select your Check-Out" />
       </ItemWrapper>
       <ItemWrapper name="adult">
         <StyledSelect
