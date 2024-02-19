@@ -189,11 +189,19 @@ const Reserve = () => {
                 From:{' '}
                 <DatePicker
                   onChange={handleCheckIn}
+                  disabledDate={(d) =>
+                    !d || d.isBefore(new Date())
+                  }
                   placeholder="Select your Check-In"
                 />
                 <LabelTo>To: </LabelTo>
                 <DatePicker
                   onChange={handleCheckOut}
+                  disabledDate={(d) =>
+                    !d ||
+                    d.isBefore(new Date()) ||
+                    d.isBefore(checkIn?.add(1, 'day'))
+                  }
                   placeholder="Select your Check-Out"
                 />
               </li>
@@ -224,8 +232,10 @@ const Reserve = () => {
               </li>
               <li>Total Nights selected: {night}</li>
               <li>
-                Total Reservation: $
-                {room?.rate ? room.rate * night : '0'}
+                <strong>
+                  Total Reservation: $
+                  {room?.rate ? room.rate * night : '0'}
+                </strong>
               </li>
             </ListRooms>
           </RoomWrapper>

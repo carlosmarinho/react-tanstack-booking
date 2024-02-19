@@ -105,6 +105,8 @@ const SearchBar: FC<ISearchBar> = ({ onSearch }) => {
   // Watch all values
   const values = Form.useWatch([], form);
 
+  console.log('\n\n***\n values: ', values, '\n***\n');
+
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
       () => {
@@ -146,13 +148,23 @@ const SearchBar: FC<ISearchBar> = ({ onSearch }) => {
         name="startAt"
         rules={[{ required: true }]}
       >
-        <StyledDatePicker placeholder="Select your Check-In" />
+        <StyledDatePicker
+          placeholder="Select your Check-In"
+          disabledDate={(d) => !d || d.isBefore(new Date())}
+        />
       </ItemWrapper>
       <ItemWrapper
         name="endAt"
         rules={[{ required: true }]}
       >
-        <StyledDatePicker placeholder="Select your Check-Out" />
+        <StyledDatePicker
+          placeholder="Select your Check-Out"
+          disabledDate={(d) =>
+            !d ||
+            d.isBefore(new Date()) ||
+            d.isBefore(values.startAt.add(1, 'day'))
+          }
+        />
       </ItemWrapper>
       <ItemWrapper name="adult">
         <StyledSelect
