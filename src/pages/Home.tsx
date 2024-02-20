@@ -3,6 +3,8 @@ import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import styled from 'styled-components';
 import SearchResult from '../components/Result/SearchResult';
+import { useState } from 'react';
+import { ISearchBarValues } from '../components/common/ISearchBar';
 const { Content } = Layout;
 
 const MainContent = styled(Content)`
@@ -19,8 +21,14 @@ const ContentWrapper = styled.div`
 `;
 
 const HomePage = () => {
-  const onFinish = (values: any) => {
+  /**
+   * @todo create a context for searchBar values and onFinish function
+   */
+  const [searchBar, setSearchBar] =
+    useState<ISearchBarValues>();
+  const onFinish = (values: ISearchBarValues) => {
     console.log('Success:', values);
+    setSearchBar(values);
   };
 
   return (
@@ -28,7 +36,7 @@ const HomePage = () => {
       <Header onSearch={onFinish} />
       <MainContent>
         <ContentWrapper>
-          <SearchResult />
+          <SearchResult searchBarValues={searchBar} />
         </ContentWrapper>
       </MainContent>
       <Footer />

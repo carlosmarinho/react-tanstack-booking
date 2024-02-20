@@ -105,8 +105,6 @@ const SearchBar: FC<ISearchBar> = ({ onSearch }) => {
   // Watch all values
   const values = Form.useWatch([], form);
 
-  console.log('\n\n***\n values: ', values, '\n***\n');
-
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
       () => {

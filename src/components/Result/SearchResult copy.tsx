@@ -14,7 +14,7 @@ import styled from 'styled-components';
 import ActionItems from './ActionItems';
 import RightCard from './RightCard';
 import { ISearchBarValues } from '../common/ISearchBar';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 const { Paragraph, Text } = Typography;
 
@@ -87,40 +87,34 @@ interface ISearchBar {
 const SearchResult: FC<ISearchBar> = ({
   searchBarValues,
 }) => {
-  /**
-   * @todo need to create on api availability for certain data. For now we are skipping the filter checkin and checkout
-   */
+  const [url, setUrl] = useState('/locations?populate=*');
+  console.log(
+    '\n\n***\n valuessearch: ',
+    searchBarValues,
+    '\n***\n',
+  );
+
   const filteredUrl = () => {
     let url = '/locations?populate=*';
     if (searchBarValues?.city) {
       url += `&filters[city][id][$eq]=${searchBarValues.city}`;
     }
-    if (searchBarValues?.adult) {
-      url += `&filters[rooms][guests][$gte]=${
-        searchBarValues.adult +
-        (searchBarValues?.children || 0)
-      }`;
-    }
 
     return url;
   };
 
-  console.log(
-    '\n\n***\n valuessearch: ',
-    searchBarValues,
-    filteredUrl(),
-    '\n***\n',
-  );
+  useEffect(() => {
+    if (searchBarValues) {
+      setUrl(filteredUrl());
+    }
+  }, [searchBarValues]);
 
   const ellipsis = true;
 
   const { isLoading, data: locations } = useQuery({
-    queryKey: ['locations', searchBarValues],
+    queryKey: ['locations'],
     queryFn: async () => {
-      return await sendApiRequest<ILocation[]>(
-        filteredUrl(),
-        'GET',
-      );
+      return await sendApiRequest<ILocation[]>(url, 'GET');
     },
   });
 
