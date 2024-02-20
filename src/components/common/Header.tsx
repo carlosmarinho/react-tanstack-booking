@@ -7,7 +7,7 @@ import { FC } from 'react';
 const { Header: HeaderAnt } = Layout;
 
 const StyledHeader = styled(HeaderAnt)<{
-  showSearchBar: boolean;
+  $showSearchBar: boolean;
 }>`
   position: sticky;
   top: 0;
@@ -15,7 +15,7 @@ const StyledHeader = styled(HeaderAnt)<{
   width: 100%;
   display: flex;
   flex-direction: column;
-  height: ${(p) => (p.showSearchBar ? '400px' : '100px')};
+  height: ${(p) => (p.$showSearchBar ? '400px' : '100px')};
   padding-top: 10px;
 `;
 
@@ -98,7 +98,7 @@ const Header: FC<IHeader> = ({
   showSearchBar = true,
 }) => {
   return (
-    <StyledHeader showSearchBar={showSearchBar}>
+    <StyledHeader $showSearchBar={showSearchBar}>
       <ContainerNav>
         <ContainerLogo className="demo-logo" style={{}}>
           <Link to="/">
