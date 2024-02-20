@@ -81,7 +81,7 @@ const Header: FC<IHeader> = ({
   onSearch,
   showSearchBar = true,
 }) => {
-  const { setTokens, authTokens, isLogged } =
+  const { setTokens, authTokens, isLogged, logout } =
     useContext(AuthContext);
 
   const handleLogin = () => {
@@ -129,6 +129,14 @@ const Header: FC<IHeader> = ({
         <Link to="/my-reservation">My Reservation</Link>
       ),
     },
+    {
+      key: 'logout',
+      label: (
+        <a href="#" onClick={logout}>
+          Logout
+        </a>
+      ),
+    },
   ];
 
   return (
@@ -144,9 +152,10 @@ const Header: FC<IHeader> = ({
           </Link>
         </ContainerLogo>
 
-        {/**@todo was getting a problem overriding Menu
-            in styled component to remove this inline style
-          */}
+        {/**
+         * @todo was getting a problem overriding Menu
+         * in styled component to remove this inline style
+         */}
         <Menu
           theme="dark"
           mode="horizontal"

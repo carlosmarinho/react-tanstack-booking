@@ -13,12 +13,14 @@ interface IAuth {
   authTokens: IUser;
   setTokens: (user: IUser) => void;
   isLogged: boolean;
+  logout: () => void;
 }
 
 const AuthContext = createContext<IAuth>({
   authTokens: defaultUser,
   setTokens: () => {},
   isLogged: false,
+  logout: () => {},
 });
 
 const AuthProvider: FC<{ children: React.ReactNode }> = ({
@@ -35,10 +37,16 @@ const AuthProvider: FC<{ children: React.ReactNode }> = ({
     setIsLogged(true);
   };
 
+  const logout = () => {
+    localStorage.removeItem('tokens');
+    setIsLogged(false);
+  };
+
   const valuesToShare = {
     authTokens,
     setTokens,
     isLogged,
+    logout,
   };
 
   return (
