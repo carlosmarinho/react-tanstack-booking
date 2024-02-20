@@ -137,6 +137,10 @@ const Header: FC<IHeader> = ({
         </a>
       ),
     },
+    {
+      key: 'admin',
+      label: <Link to="/admin">Admin</Link>,
+    },
   ];
 
   return (

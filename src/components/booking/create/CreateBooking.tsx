@@ -19,11 +19,19 @@ import { useEffect, useState } from 'react';
 import { IUser } from '../../user/IUser';
 import { ILocation } from '../../location/ILocation';
 import { ICity } from '../../city/ICity';
+import { IRoom } from '../../room/IRoom';
+import { adultsArray, childrenArray } from '../../../utils';
 
 const CreateBooking = () => {
   const [form] = Form.useForm();
   const [showSuccessMessage, setShowSuccessMessage] =
     useState(false);
+
+  const values = Form.useWatch([], form);
+  const { cityId, locationId } = values || {
+    cityId: 0,
+    locationId: 0,
+  };
 
   const { isLoading: loadingCustomers, data: customers } =
     useQuery({
@@ -52,16 +60,19 @@ const CreateBooking = () => {
       queryKey: ['locations'],
       queryFn: async () => {
         return await sendApiRequest<ILocation[]>(
-          '/locations?populate=featuredImage,rooms',
+          `/locations?populate=featuredImage,rooms&filters[city][id][$eq]=${values.cityId}`,
           'GET',
         );
       },
+      enabled: !!cityId,
     });
 
   const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (data: ICreateBooking) =>
       sendApiRequest('/bookings', 'POST', data),
   });
+
+  console.log('\n\n***\n vales: ', locations, '\n***\n');
 
   useEffect(() => {
     if (isSuccess) {
@@ -85,6 +96,8 @@ const CreateBooking = () => {
       form.resetFields();
     }
   };
+
+  const [location] = locations || [{ rooms: { data: [] } }];
 
   return (
     <>
@@ -122,24 +135,48 @@ const CreateBooking = () => {
             />
           )}
         </Form.Item>
-        <Form.Item
-          name="locationId"
-          label="Location"
-          rules={[{ required: true }]}
-        >
-          {loadingLocations ? (
-            <Spin tip="Loading" size="small">
-              <div className="content" />
-            </Spin>
-          ) : (
-            <Select
-              options={locations?.map((location) => ({
-                value: location.id,
-                label: location.name,
-              }))}
-            />
-          )}
-        </Form.Item>
+        {cityId && (
+          <Form.Item
+            name="locationId"
+            label="Location"
+            rules={[{ required: true }]}
+          >
+            {loadingLocations ? (
+              <Spin tip="Loading" size="small">
+                <div className="content" />
+              </Spin>
+            ) : (
+              <Select
+                options={locations?.map((location) => ({
+                  value: location.id,
+                  label: location.name,
+                }))}
+              />
+            )}
+          </Form.Item>
+        )}
+        {cityId && locationId && locations && (
+          <Form.Item
+            name="room"
+            label="Room"
+            rules={[{ required: true }]}
+          >
+            {loadingLocations ? (
+              <Spin tip="Loading" size="small">
+                <div className="content" />
+              </Spin>
+            ) : (
+              <Select
+                options={location.rooms?.data.map(
+                  (room: IRoom) => ({
+                    value: room.id,
+                    label: room.name,
+                  }),
+                )}
+              />
+            )}
+          </Form.Item>
+        )}
         <Form.Item
           name="customerId"
           label="Customer"
@@ -176,6 +213,32 @@ const CreateBooking = () => {
           <DatePicker
             showTime
             placeholder="Select Check-Out"
+          />
+        </Form.Item>
+        <Form.Item
+          name="adults"
+          label="Adults"
+          rules={[{ required: true }]}
+        >
+          <Select
+            placeholder="Quantity Adult"
+            options={adultsArray?.map((person) => ({
+              value: person,
+              label: person,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          name="children"
+          label="Children"
+          rules={[{ required: true }]}
+        >
+          <Select
+            placeholder="Quantity Children"
+            options={childrenArray?.map((person) => ({
+              value: person,
+              label: person,
+            }))}
           />
         </Form.Item>
         <Button
