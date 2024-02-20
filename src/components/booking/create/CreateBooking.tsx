@@ -57,7 +57,7 @@ const CreateBooking = () => {
 
   const { isLoading: loadingLocations, data: locations } =
     useQuery({
-      queryKey: ['locations'],
+      queryKey: ['locations', cityId],
       queryFn: async () => {
         return await sendApiRequest<ILocation[]>(
           `/locations?populate=featuredImage,rooms&filters[city][id][$eq]=${values.cityId}`,
