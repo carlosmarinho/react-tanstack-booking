@@ -84,7 +84,7 @@ const StyledButton = styled(Button)`
 `;
 
 export interface ISearchBar {
-  onSearch: (values: any) => void;
+  onSearch?: (values: any) => void;
 }
 
 const SearchBar: FC<ISearchBar> = ({ onSearch }) => {

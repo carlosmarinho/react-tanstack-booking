@@ -12,6 +12,7 @@ import HomePage from './pages/Home';
 import ReservePage from './pages/Reserve';
 import HomePageAdmin from './pages/admin/Home';
 import { AuthProvider } from './context/auth';
+import NotFound from './pages/NotFound';
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => {
               path="/admin/"
               element={<HomePageAdmin />}
             />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </AuthProvider>

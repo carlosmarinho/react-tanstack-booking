@@ -1,11 +1,10 @@
-import CreateBooking from '../../components/booking/create/CreateBooking';
-import ListBooking from '../../components/booking/list/ListBooking';
-
 import React, { useContext, useState } from 'react';
 import {
   UserOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
+import CreateBooking from '../../components/booking/create/CreateBooking';
+import ListBooking from '../../components/booking/list/ListBooking';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
 import Footer from '../../components/common/Footer';
@@ -127,7 +126,9 @@ const HomePageAdmin = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-              Bill is a cat.
+              <h1>HostFully Booking Administrator</h1>
+              <CreateBooking />
+              <ListBooking />
             </div>
           </Content>
           <Footer />
@@ -136,15 +137,5 @@ const HomePageAdmin = () => {
     </Layout>
   );
 };
-
-// const HomePageAdmin = () => {
-//   return (
-//     <>
-//       <h1>HostFully Booking Administrator</h1>
-//       <CreateBooking />
-//       <ListBooking />
-//     </>
-//   );
-// };
 
 export default HomePageAdmin;
