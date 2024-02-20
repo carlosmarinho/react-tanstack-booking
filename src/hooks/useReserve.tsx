@@ -1,14 +1,41 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import AuthContext from '../context/auth';
 import { useMutation } from '@tanstack/react-query';
 import { ICreateBooking } from '../components/booking/create/ICreateBooking';
 import { sendApiRequest } from '../helpers/sendApiRequest';
 import { IDoReserve } from '../components/booking/IBooking';
+import dayjs, { Dayjs } from 'dayjs';
 
-export function useReserve(roomId: string | undefined) {
+interface IUseReserve {
+  roomId: string | undefined;
+  strCheckIn: string | undefined;
+  strCheckOut: string | undefined;
+}
+
+export function useReserve({
+  roomId,
+  strCheckIn,
+  strCheckOut,
+}: IUseReserve) {
   const [warningMessage, setWarningMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const { isLogged, authTokens } = useContext(AuthContext);
+  const [night, setNight] = useState(0);
+  const [checkIn, setCheckIn] = useState<Dayjs | null>(
+    strCheckIn ? dayjs(strCheckIn) : null,
+  );
+
+  const [checkOut, setCheckOut] = useState<Dayjs | null>(
+    strCheckOut ? dayjs(strCheckOut) : null,
+  );
+
+  useEffect(() => {
+    if (checkIn && checkOut) {
+      const hours = checkOut.diff(checkIn, 'hours');
+      const days = Math.floor(hours / 24);
+      setNight(days);
+    }
+  }, [checkIn, checkOut]);
 
   const { mutate, isPending, isSuccess } = useMutation({
     mutationKey: ['doReservation', roomId],
@@ -16,12 +43,29 @@ export function useReserve(roomId: string | undefined) {
       sendApiRequest('/bookings', 'POST', data),
   });
 
+  useEffect(() => {
+    if (isSuccess) {
+      setSuccessMessage(
+        'Your reservation was successfull concluded! Please wait confirmation!',
+      );
+    }
+
+    const successTimeout = setTimeout(
+      () => setSuccessMessage(''),
+      5000,
+    );
+
+    return () => {
+      clearTimeout(successTimeout);
+    };
+  }, [isSuccess]);
+
   const doReservation = ({
-    checkIn,
-    checkOut,
     room,
-    night,
     totalValue,
+    adults,
+    children = 0,
+    user,
   }: IDoReserve) => {
     if (!checkIn || !checkOut) {
       setWarningMessage(
@@ -37,18 +81,16 @@ export function useReserve(roomId: string | undefined) {
           const reservetionData = {
             startAt: checkIn.toDate(),
             endAt: checkOut.toDate(),
-            user: authTokens.id,
+            users_permissions_user: user || authTokens.id,
             room: room.id,
             nights: night,
             nightValue: room?.rate,
             totalValue: totalValue,
+            adults,
+            children,
+            totalGuests: adults + children,
           };
           mutate(reservetionData);
-          if (isSuccess) {
-            setSuccessMessage(
-              'Your reservation was successfull concluded! Please wait confirmation!',
-            );
-          }
         }
       }
     }
@@ -60,6 +102,11 @@ export function useReserve(roomId: string | undefined) {
     isSuccess,
     warningMessage,
     successMessage,
+    setCheckIn,
+    setCheckOut,
+    checkIn,
+    checkOut,
+    night,
     doReservation,
   };
 }

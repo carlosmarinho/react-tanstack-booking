@@ -6,7 +6,7 @@ import {
   Button,
   Card,
   DatePicker,
-  DatePickerProps,
+  // DatePickerProps,
   Select,
   Spin,
   Typography,
@@ -15,7 +15,7 @@ import { useParams } from 'react-router-dom';
 import { getIMageFromData } from '../../helpers/getImageFromData';
 import styled from 'styled-components';
 import { useContext, useEffect, useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
+// import dayjs, { Dayjs } from 'dayjs';
 import { adultsArray, childrenArray } from '../../utils';
 import AuthContext from '../../context/auth';
 import { useReserve } from '../../hooks/useReserve';
@@ -54,7 +54,6 @@ const Reserve = () => {
 
   const ellipsis = true;
   const [totalValue, setTotalValue] = useState(0);
-  const [night, setNight] = useState(0);
 
   const {
     roomId,
@@ -66,21 +65,19 @@ const Reserve = () => {
 
   const {
     isPending,
+    isSuccess,
     warningMessage,
     successMessage,
+    setCheckIn,
+    setCheckOut,
+    checkIn,
+    checkOut,
+    night,
     doReservation,
-  } = useReserve(roomId);
+  } = useReserve({ roomId, strCheckIn, strCheckOut });
 
   const [totalGuests, setTotalGuests] = useState(
     parseInt(strAdults) + parseInt(strChildren),
-  );
-
-  const [checkIn, setCheckIn] = useState<Dayjs | null>(
-    strCheckIn ? dayjs(strCheckIn) : null,
-  );
-
-  const [checkOut, setCheckOut] = useState<Dayjs | null>(
-    strCheckOut ? dayjs(strCheckOut) : null,
   );
 
   const [adults, setAdults] = useState(strAdults);
@@ -96,18 +93,6 @@ const Reserve = () => {
     },
   });
 
-  const handleCheckIn: DatePickerProps['onChange'] = (
-    date,
-  ) => {
-    setCheckIn(date);
-  };
-
-  const handleCheckOut: DatePickerProps['onChange'] = (
-    date,
-  ) => {
-    setCheckOut(date);
-  };
-
   const handleChangeAdult = (value: string) => {
     setAdults(value);
   };
@@ -115,14 +100,6 @@ const Reserve = () => {
   const handleChangeChildren = (value: string) => {
     setChildren(value);
   };
-
-  useEffect(() => {
-    if (checkIn && checkOut) {
-      const hours = checkOut.diff(checkIn, 'hours');
-      const days = Math.floor(hours / 24);
-      setNight(days);
-    }
-  }, [checkIn, checkOut]);
 
   useEffect(() => {
     if (adults && room?.rate) {
@@ -138,7 +115,8 @@ const Reserve = () => {
       totalGuests > 0 &&
       room?.guests &&
       totalGuests <= room.guests &&
-      totalValue > 0
+      totalValue > 0 &&
+      !isSuccess
     );
   };
 
@@ -173,11 +151,10 @@ const Reserve = () => {
               disabled={!canReserve() || isPending}
               onClick={() =>
                 doReservation({
-                  checkIn,
-                  checkOut,
                   room,
-                  night,
                   totalValue,
+                  adults: parseInt(adults),
+                  children: parseInt(children),
                 })
               }
             >
@@ -233,7 +210,7 @@ const Reserve = () => {
                 From:{' '}
                 <DatePicker
                   defaultValue={checkIn}
-                  onChange={handleCheckIn}
+                  onChange={setCheckIn}
                   disabledDate={(d) =>
                     !d || d.isBefore(new Date())
                   }
@@ -242,7 +219,7 @@ const Reserve = () => {
                 <LabelTo>To: </LabelTo>
                 <DatePicker
                   defaultValue={checkOut}
-                  onChange={handleCheckOut}
+                  onChange={setCheckOut}
                   disabledDate={(d) =>
                     !d ||
                     d.isBefore(new Date()) ||

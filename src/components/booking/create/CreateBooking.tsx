@@ -1,7 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   Alert,
   Button,
@@ -14,24 +11,58 @@ import {
   sendApiRequest,
   sendApiRequestforUser,
 } from '../../../helpers/sendApiRequest';
-import { ICreateBooking } from './ICreateBooking';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { IUser } from '../../user/IUser';
 import { ILocation } from '../../location/ILocation';
 import { ICity } from '../../city/ICity';
 import { IRoom } from '../../room/IRoom';
 import { adultsArray, childrenArray } from '../../../utils';
+import { useReserve } from '../../../hooks/useReserve';
 
 const CreateBooking = () => {
   const [form] = Form.useForm();
-  const [showSuccessMessage, setShowSuccessMessage] =
-    useState(false);
+  const totalValue = 0;
 
   const values = Form.useWatch([], form);
-  const { cityId, locationId } = values || {
+  const {
+    cityId,
+    locationId,
+    room,
+    checkIn,
+    checkOut,
+    adults,
+    children,
+    user,
+  } = values || {
     cityId: 0,
     locationId: 0,
+    roomId: 0,
   };
+
+  console.log(
+    '\n\n***\n roooom: ',
+    room,
+    checkIn,
+    checkOut,
+    '\n***\n',
+  );
+
+  const {
+    isPending,
+    isSuccess,
+    warningMessage,
+    successMessage,
+    setCheckIn,
+    setCheckOut,
+    night,
+    // checkIn,
+    // checkOut,
+    doReservation,
+  } = useReserve({
+    roomId: room,
+    strCheckIn: checkIn?.format('YYYY/MM/DD'),
+    strCheckOut: checkOut?.format('YYYY/MM/DD'),
+  });
 
   const { isLoading: loadingCustomers, data: customers } =
     useQuery({
@@ -67,54 +98,46 @@ const CreateBooking = () => {
       enabled: !!cityId,
     });
 
-  const { mutate, isPending, isSuccess } = useMutation({
-    mutationFn: (data: ICreateBooking) =>
-      sendApiRequest('/bookings', 'POST', data),
-  });
-
-  console.log('\n\n***\n vales: ', locations, '\n***\n');
-
   useEffect(() => {
     if (isSuccess) {
-      setShowSuccessMessage(true);
       form.resetFields();
     }
-
-    const successTimeout = setTimeout(
-      () => setShowSuccessMessage(false),
-      3500,
-    );
-
-    return () => {
-      clearTimeout(successTimeout);
-    };
   }, [isSuccess]);
 
-  const onFinish = (values: ICreateBooking) => {
-    mutate(values);
-    if (isSuccess) {
-      form.resetFields();
-    }
+  const canReserve = () => {
+    return (
+      night > 0 &&
+      parseInt(adults) + parseInt(children) > 0 &&
+      room?.guests &&
+      parseInt(adults) + parseInt(children) <=
+        room.guests &&
+      totalValue > 0 &&
+      !isSuccess
+    );
   };
 
   const [location] = locations || [{ rooms: { data: [] } }];
 
   return (
     <>
-      {showSuccessMessage && (
-        <Alert
-          message="Booking created successfully!"
-          type="success"
-        />
+      {warningMessage && (
+        <Alert message={warningMessage} type="warning" />
       )}
-      {isPending && (
-        <Spin tip="Loading" size="large">
-          <div className="content" />
-        </Spin>
+
+      {successMessage && (
+        <Alert message={successMessage} type="success" />
       )}
       <Form
         name="create-booking"
-        onFinish={onFinish}
+        onFinish={() =>
+          doReservation({
+            room,
+            totalValue,
+            adults: parseInt(adults),
+            children: parseInt(children),
+            user,
+          })
+        }
         form={form}
       >
         <Form.Item
@@ -178,7 +201,7 @@ const CreateBooking = () => {
           </Form.Item>
         )}
         <Form.Item
-          name="customerId"
+          name="user"
           label="Customer"
           rules={[{ required: true }]}
         >
@@ -196,22 +219,22 @@ const CreateBooking = () => {
           )}
         </Form.Item>
         <Form.Item
-          name="startAt"
+          name="checkIn"
           label="Check-In"
           rules={[{ required: true }]}
         >
           <DatePicker
-            showTime
+            onChange={setCheckIn}
             placeholder="Select Check-In"
           />
         </Form.Item>
         <Form.Item
-          name="endAt"
+          name="checkOut"
           label="Check-Out"
           rules={[{ required: true }]}
         >
           <DatePicker
-            showTime
+            onChange={setCheckOut}
             placeholder="Select Check-Out"
           />
         </Form.Item>
@@ -244,7 +267,7 @@ const CreateBooking = () => {
         <Button
           type="primary"
           htmlType="submit"
-          disabled={isPending}
+          disabled={!canReserve() || isPending}
         >
           Reserve
         </Button>

@@ -1,4 +1,3 @@
-import { Dayjs } from 'dayjs';
 import { IRoom } from '../room/IRoom';
 export interface Ibooking {
   id: string;
@@ -9,9 +8,9 @@ export interface Ibooking {
 }
 
 export interface IDoReserve {
-  checkIn: Dayjs | null;
-  checkOut?: Dayjs | null;
   room?: IRoom;
-  night: number;
   totalValue: number;
+  adults: number;
+  children?: number;
+  user?: number;
 }
