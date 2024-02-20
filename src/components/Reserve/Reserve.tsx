@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { sendApiRequest } from '../../helpers/sendApiRequest';
 import { IRoom } from '../room/IRoom';
 import {
+  Alert,
   Button,
   Card,
   DatePicker,
@@ -13,9 +14,10 @@ import {
 import { useParams } from 'react-router-dom';
 import { getIMageFromData } from '../../helpers/getImageFromData';
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { adultsArray, childrenArray } from '../../utils';
+import AuthContext from '../../context/auth';
 
 const { Paragraph, Text } = Typography;
 
@@ -47,6 +49,10 @@ const LabelTo = styled(Text)`
 `;
 
 const Reserve = () => {
+  const { isLogged } = useContext(AuthContext);
+  const [warningMessage, setWarningMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
   const {
     roomId,
     checkIn: strCheckIn,
@@ -123,6 +129,18 @@ const Reserve = () => {
 
   const { data: location } = room?.location || {};
 
+  const doReservation = () => {
+    if (!isLogged) {
+      setWarningMessage(
+        'Please Login to our website on top right of page!',
+      );
+    } else {
+      setSuccessMessage(
+        'Your reservation was successfull concluded! Please wait confirmation!',
+      );
+    }
+  };
+
   return (
     <>
       <h2>Reserve</h2>
@@ -150,11 +168,25 @@ const Reserve = () => {
               danger
               key="reserva"
               disabled={!canReserve()}
+              onClick={doReservation}
             >
               Confirm Reservation
             </Button>,
           ]}
         >
+          {!isLogged && warningMessage && (
+            <Alert
+              message={warningMessage}
+              type="warning"
+            />
+          )}
+
+          {isLogged && successMessage && (
+            <Alert
+              message={successMessage}
+              type="success"
+            />
+          )}
           <h3>{location.name}</h3>
           <Paragraph
             ellipsis={
