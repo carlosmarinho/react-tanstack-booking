@@ -21,7 +21,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route
-            path="/reserve/:roomId/:checkIn?/:checkOut?"
+            path="/reserve/:roomId/:checkIn?/:checkOut?/:adults?/:children?"
             element={<ReservePage />}
           />
           <Route

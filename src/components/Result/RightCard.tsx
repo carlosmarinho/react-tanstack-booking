@@ -10,6 +10,9 @@ const { Text } = Typography;
 const FeaturedHotel = styled.div`
   display: flex;
   flex-direction: column;
+  img {
+    border: 1px solid #cecece;
+  }
 `;
 
 const TopIMage = styled.div`

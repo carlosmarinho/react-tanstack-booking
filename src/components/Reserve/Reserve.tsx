@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom';
 import { getIMageFromData } from '../../helpers/getImageFromData';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { adultsArray, childrenArray } from '../../utils';
 
 const { Paragraph, Text } = Typography;
@@ -60,10 +60,10 @@ const Reserve = () => {
     parseInt(strAdults) + parseInt(strChildren),
   );
   const [checkIn, setCheckIn] = useState<Dayjs | null>(
-    strCheckIn ? new Dayjs(strCheckIn) : null,
+    strCheckIn ? dayjs(strCheckIn) : null,
   );
   const [checkOut, setCheckOut] = useState<Dayjs | null>(
-    strCheckOut ? new Dayjs(strCheckOut) : null,
+    strCheckOut ? dayjs(strCheckOut) : null,
   );
   const [adults, setAdults] = useState(strAdults);
   const [children, setChildren] = useState(strChildren);
@@ -103,12 +103,12 @@ const Reserve = () => {
   }, [adults, children]);
 
   const canReserve = () => {
-    console.log(
-      '\n\n***\n ttotallldd: ',
-      totalGuests,
-      '\n***\n',
+    return (
+      night > 0 &&
+      totalGuests > 0 &&
+      room?.guests &&
+      totalGuests <= room.guests
     );
-    return night > 0 && totalGuests > 0;
   };
 
   const { isLoading, data: room } = useQuery({
@@ -188,6 +188,7 @@ const Reserve = () => {
               <li>
                 From:{' '}
                 <DatePicker
+                  defaultValue={checkIn}
                   onChange={handleCheckIn}
                   disabledDate={(d) =>
                     !d || d.isBefore(new Date())
@@ -196,6 +197,7 @@ const Reserve = () => {
                 />
                 <LabelTo>To: </LabelTo>
                 <DatePicker
+                  defaultValue={checkOut}
                   onChange={handleCheckOut}
                   disabledDate={(d) =>
                     !d ||
@@ -208,6 +210,7 @@ const Reserve = () => {
               <li>
                 Adults:
                 <Select
+                  defaultValue={adults}
                   onChange={handleChangeAdult}
                   placeholder="Quantity Adult"
                   options={adultsArray?.map((person) => ({
@@ -217,6 +220,7 @@ const Reserve = () => {
                 />
                 <LabelChildren>Children: </LabelChildren>
                 <Select
+                  defaultValue={children}
                   onChange={handleChangeChildren}
                   placeholder="Quantity Adult"
                   options={childrenArray?.map((person) => ({
