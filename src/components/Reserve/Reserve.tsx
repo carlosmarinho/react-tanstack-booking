@@ -1,7 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { sendApiRequest } from '../../helpers/sendApiRequest';
 import { IRoom } from '../room/IRoom';
 import {
@@ -21,7 +18,7 @@ import { useContext, useEffect, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { adultsArray, childrenArray } from '../../utils';
 import AuthContext from '../../context/auth';
-import { ICreateBooking } from '../booking/create/ICreateBooking';
+import { useReserve } from '../../hooks/useReserve';
 
 const { Paragraph, Text } = Typography;
 
@@ -53,9 +50,8 @@ const LabelTo = styled(Text)`
 `;
 
 const Reserve = () => {
-  const { isLogged, authTokens } = useContext(AuthContext);
-  const [warningMessage, setWarningMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const { isLogged } = useContext(AuthContext);
+
   const ellipsis = true;
   const [totalValue, setTotalValue] = useState(0);
   const [night, setNight] = useState(0);
@@ -67,6 +63,13 @@ const Reserve = () => {
     adults: strAdults = '0',
     children: strChildren = '0',
   } = useParams();
+
+  const {
+    isPending,
+    warningMessage,
+    successMessage,
+    doReservation,
+  } = useReserve(roomId);
 
   const [totalGuests, setTotalGuests] = useState(
     parseInt(strAdults) + parseInt(strChildren),
@@ -82,12 +85,6 @@ const Reserve = () => {
 
   const [adults, setAdults] = useState(strAdults);
   const [children, setChildren] = useState(strChildren);
-
-  const { mutate, isPending, isSuccess } = useMutation({
-    mutationKey: ['doReservation', roomId],
-    mutationFn: (data: ICreateBooking) =>
-      sendApiRequest('/bookings', 'POST', data),
-  });
 
   const { isLoading, data: room } = useQuery({
     queryKey: ['room', roomId],
@@ -147,32 +144,6 @@ const Reserve = () => {
 
   const { data: location } = room?.location || {};
 
-  const doReservation = () => {
-    if (!isLogged) {
-      setWarningMessage(
-        'Please Login to our website on top right of page to do your reservation!',
-      );
-    } else {
-      if (checkIn && checkOut && room) {
-        const reservetionData = {
-          startAt: checkIn.toDate(),
-          endAt: checkOut.toDate(),
-          user: authTokens.id,
-          room: room.id,
-          nights: night,
-          nightValue: room?.rate,
-          totalValue: totalValue,
-        };
-        mutate(reservetionData);
-        if (isSuccess) {
-          setSuccessMessage(
-            'Your reservation was successfull concluded! Please wait confirmation!',
-          );
-        }
-      }
-    }
-  };
-
   return (
     <>
       <h2>Reserve</h2>
@@ -199,9 +170,18 @@ const Reserve = () => {
             <Button
               danger
               key="reserva"
-              disabled={!canReserve()}
-              onClick={doReservation}
+              disabled={!canReserve() || isPending}
+              onClick={() =>
+                doReservation({
+                  checkIn,
+                  checkOut,
+                  room,
+                  night,
+                  totalValue,
+                })
+              }
             >
+              {isPending && <Spin size="small" />}
               Confirm Reservation
             </Button>,
           ]}
