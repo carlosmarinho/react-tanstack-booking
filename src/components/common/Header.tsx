@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import SearchBar, { ISearchBar } from './SearchBar';
 import { device } from '../../utils';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
+import AuthContext from '../../context/auth';
 const { Header: HeaderAnt } = Layout;
 
 const StyledHeader = styled(HeaderAnt)<{
@@ -72,23 +73,6 @@ const FeaturedSubText = styled.p`
   }
 `;
 
-const leftItems = [
-  {
-    key: 'hotels',
-    label: <Link to="/hotels">Hotels</Link>,
-  },
-];
-const rightItems = [
-  {
-    key: 'register',
-    label: <Link to="/register">Register</Link>,
-  },
-  {
-    key: 'signin',
-    label: <Link to="/signin">Sign-In</Link>,
-  },
-];
-
 interface IHeader extends ISearchBar {
   showSearchBar?: boolean;
 }
@@ -97,6 +81,56 @@ const Header: FC<IHeader> = ({
   onSearch,
   showSearchBar = true,
 }) => {
+  const { setTokens, authTokens, isLogged } =
+    useContext(AuthContext);
+
+  const handleLogin = () => {
+    /**
+     * @todo implement login, now here we are only mocking this api
+     */
+    setTokens({
+      id: 1,
+      username: 'carlos',
+      email: 'carlos@gmail.com',
+      blocked: false,
+      confirmed: true,
+    });
+  };
+
+  const leftItems = [
+    {
+      key: 'hotels',
+      label: <Link to="/hotels">Hotels</Link>,
+    },
+  ];
+  const rightItems = [
+    {
+      key: 'register',
+      label: <Link to="/register">Register</Link>,
+    },
+    {
+      key: 'signin',
+      label: (
+        <a href="#" onClick={handleLogin}>
+          Sign-In
+        </a>
+      ),
+    },
+  ];
+
+  const rightItemsLogged = [
+    {
+      key: 'welcome-user',
+      label: `Welcome ${authTokens.username.toUpperCase()}!`,
+    },
+    {
+      key: 'my-reservation',
+      label: (
+        <Link to="/my-reservation">My Reservation</Link>
+      ),
+    },
+  ];
+
   return (
     <StyledHeader $showSearchBar={showSearchBar}>
       <ContainerNav>
@@ -124,7 +158,7 @@ const Header: FC<IHeader> = ({
           theme="dark"
           mode="horizontal"
           defaultSelectedKeys={['2']}
-          items={rightItems}
+          items={isLogged ? rightItemsLogged : rightItems}
           style={{
             flex: 1,
             minWidth: 0,

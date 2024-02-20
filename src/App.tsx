@@ -11,25 +11,29 @@ import {
 import HomePage from './pages/Home';
 import ReservePage from './pages/Reserve';
 import HomePageAdmin from './pages/admin/Home';
+import { AuthProvider } from './context/auth';
 
 const queryClient = new QueryClient();
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route
-            path="/reserve/:roomId/:checkIn?/:checkOut?/:adults?/:children?"
-            element={<ReservePage />}
-          />
-          <Route
-            path="/admin/"
-            element={<HomePageAdmin />}
-          />
-        </Routes>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/reserve/:roomId/:checkIn?/:checkOut?/:adults?/:children?"
+              element={<ReservePage />}
+            />
+            <Route
+              path="/admin/"
+              element={<HomePageAdmin />}
+            />
+          </Routes>
+        </Router>
+      </AuthProvider>
+
       {/* <HomePage /> */}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
