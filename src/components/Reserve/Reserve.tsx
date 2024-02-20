@@ -1,4 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import { sendApiRequest } from '../../helpers/sendApiRequest';
 import { IRoom } from '../room/IRoom';
 import {
@@ -18,6 +21,7 @@ import { useContext, useEffect, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { adultsArray, childrenArray } from '../../utils';
 import AuthContext from '../../context/auth';
+import { ICreateBooking } from '../booking/create/ICreateBooking';
 
 const { Paragraph, Text } = Typography;
 
@@ -49,9 +53,12 @@ const LabelTo = styled(Text)`
 `;
 
 const Reserve = () => {
-  const { isLogged } = useContext(AuthContext);
+  const { isLogged, authTokens } = useContext(AuthContext);
   const [warningMessage, setWarningMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const ellipsis = true;
+  const [totalValue, setTotalValue] = useState(0);
+  const [night, setNight] = useState(0);
 
   const {
     roomId,
@@ -60,19 +67,37 @@ const Reserve = () => {
     adults: strAdults = '0',
     children: strChildren = '0',
   } = useParams();
-  const ellipsis = true;
-  const [night, setNight] = useState(0);
+
   const [totalGuests, setTotalGuests] = useState(
     parseInt(strAdults) + parseInt(strChildren),
   );
+
   const [checkIn, setCheckIn] = useState<Dayjs | null>(
     strCheckIn ? dayjs(strCheckIn) : null,
   );
+
   const [checkOut, setCheckOut] = useState<Dayjs | null>(
     strCheckOut ? dayjs(strCheckOut) : null,
   );
+
   const [adults, setAdults] = useState(strAdults);
   const [children, setChildren] = useState(strChildren);
+
+  const { mutate, isPending, isSuccess } = useMutation({
+    mutationKey: ['doReservation', roomId],
+    mutationFn: (data: ICreateBooking) =>
+      sendApiRequest('/bookings', 'POST', data),
+  });
+
+  const { isLoading, data: room } = useQuery({
+    queryKey: ['room', roomId],
+    queryFn: async () => {
+      return await sendApiRequest<IRoom>(
+        `/rooms/${roomId}?populate[location][populate][0]=featuredImage`,
+        'GET',
+      );
+    },
+  });
 
   const handleCheckIn: DatePickerProps['onChange'] = (
     date,
@@ -103,8 +128,10 @@ const Reserve = () => {
   }, [checkIn, checkOut]);
 
   useEffect(() => {
-    if (adults) {
+    if (adults && room?.rate) {
       setTotalGuests(parseInt(adults) + parseInt(children));
+
+      setTotalValue(room.rate ? room.rate * night : 0);
     }
   }, [adults, children]);
 
@@ -113,38 +140,43 @@ const Reserve = () => {
       night > 0 &&
       totalGuests > 0 &&
       room?.guests &&
-      totalGuests <= room.guests
+      totalGuests <= room.guests &&
+      totalValue > 0
     );
   };
-
-  const { isLoading, data: room } = useQuery({
-    queryKey: ['room'],
-    queryFn: async () => {
-      return await sendApiRequest<IRoom>(
-        `/rooms/${roomId}?populate[location][populate][0]=featuredImage`,
-        'GET',
-      );
-    },
-  });
 
   const { data: location } = room?.location || {};
 
   const doReservation = () => {
     if (!isLogged) {
       setWarningMessage(
-        'Please Login to our website on top right of page!',
+        'Please Login to our website on top right of page to do your reservation!',
       );
     } else {
-      setSuccessMessage(
-        'Your reservation was successfull concluded! Please wait confirmation!',
-      );
+      if (checkIn && checkOut && room) {
+        const reservetionData = {
+          startAt: checkIn.toDate(),
+          endAt: checkOut.toDate(),
+          user: authTokens.id,
+          room: room.id,
+          nights: night,
+          nightValue: room?.rate,
+          totalValue: totalValue,
+        };
+        mutate(reservetionData);
+        if (isSuccess) {
+          setSuccessMessage(
+            'Your reservation was successfull concluded! Please wait confirmation!',
+          );
+        }
+      }
     }
   };
 
   return (
     <>
       <h2>Reserve</h2>
-      {isLoading && (
+      {(isPending || isLoading) && (
         <Spin tip="Loading" size="large">
           <div className="content" />
         </Spin>
@@ -269,8 +301,7 @@ const Reserve = () => {
               <li>Total Nights selected: {night}</li>
               <li>
                 <strong>
-                  Total Reservation: $
-                  {room?.rate ? room.rate * night : '0'}
+                  Total Reservation: ${totalValue}
                 </strong>
               </li>
             </ListRooms>

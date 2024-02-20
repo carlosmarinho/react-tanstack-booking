@@ -12,7 +12,7 @@ function returnCorrectRequest(
       method: method,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${TOKEN}`,
+        Authorization: `Bearer ${TOKEN}`,
       },
     };
   }
@@ -22,6 +22,7 @@ function returnCorrectRequest(
     body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${TOKEN}`,
     },
   };
 }
@@ -40,8 +41,8 @@ export async function sendApiRequest<T>(
     const message = `An error has occured: ${response.status}`;
     throw new Error(message);
   }
- 
-  const {data: respData} = await response.json()
+
+  const { data: respData } = await response.json();
 
   return respData;
 }
@@ -61,6 +62,6 @@ export async function sendApiRequestforUser<T>(
     const message = `An error has occured: ${response.status}`;
     throw new Error(message);
   }
- 
-  return await response.json()
+
+  return await response.json();
 }
