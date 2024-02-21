@@ -12,6 +12,7 @@ import {
   sendApiRequestforUser,
 } from '../../../helpers/sendApiRequest';
 import { useEffect } from 'react';
+import dayjs from 'dayjs';
 import { IUser } from '../../user/IUser';
 import { ILocation } from '../../location/ILocation';
 import { ICity } from '../../city/ICity';
@@ -228,16 +229,41 @@ const CreateBooking = () => {
           <DatePicker
             onChange={setCheckIn}
             placeholder="Select Check-In"
+            disabledDate={(d) =>
+              !d || d.isBefore(new Date())
+            }
+            status={
+              checkIn?.isBefore(dayjs()) ? 'error' : ''
+            }
           />
         </Form.Item>
         <Form.Item
           name="checkOut"
           label="Check-Out"
           rules={[{ required: true }]}
+          status={
+            checkOut?.isBefore(dayjs()) ||
+            checkOut?.isBefore(checkIn) ||
+            checkOut?.isSame(checkIn)
+              ? 'error'
+              : ''
+          }
         >
           <DatePicker
             onChange={setCheckOut}
             placeholder="Select Check-Out"
+            disabledDate={(d) =>
+              !d ||
+              d.isBefore(new Date()) ||
+              d.isBefore(checkIn?.add(1, 'day'))
+            }
+            status={
+              checkOut?.isBefore(dayjs()) ||
+              checkOut?.isBefore(checkIn) ||
+              checkOut?.isSame(checkIn)
+                ? 'error'
+                : ''
+            }
           />
         </Form.Item>
         <Form.Item
@@ -251,6 +277,11 @@ const CreateBooking = () => {
               value: person,
               label: person,
             }))}
+            status={
+              parseInt(adults) === 0 || parseInt(adults) > 5
+                ? 'error'
+                : ''
+            }
           />
         </Form.Item>
         <Form.Item
@@ -264,6 +295,7 @@ const CreateBooking = () => {
               value: person,
               label: person,
             }))}
+            status={parseInt(adults) > 5 ? 'error' : ''}
           />
         </Form.Item>
         <Button

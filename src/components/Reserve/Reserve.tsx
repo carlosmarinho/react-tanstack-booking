@@ -6,7 +6,6 @@ import {
   Button,
   Card,
   DatePicker,
-  // DatePickerProps,
   Select,
   Spin,
   Typography,
@@ -15,7 +14,7 @@ import { useParams } from 'react-router-dom';
 import { getIMageFromData } from '../../helpers/getImageFromData';
 import styled from 'styled-components';
 import { useContext, useEffect, useState } from 'react';
-// import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { adultsArray, childrenArray } from '../../utils';
 import AuthContext from '../../context/auth';
 import { useReserve } from '../../hooks/useReserve';
@@ -46,7 +45,7 @@ const LabelChildren = styled(Text)`
 `;
 
 const LabelTo = styled(Text)`
-  margin-left: 50px;
+  margin-left: 40px;
 `;
 
 const Reserve = () => {
@@ -104,7 +103,6 @@ const Reserve = () => {
   useEffect(() => {
     if (adults && room?.rate) {
       setTotalGuests(parseInt(adults) + parseInt(children));
-
       setTotalValue(room.rate ? room.rate * night : 0);
     }
   }, [adults, children]);
@@ -114,6 +112,7 @@ const Reserve = () => {
       night > 0 &&
       totalGuests > 0 &&
       room?.guests &&
+      parseInt(adults) > 0 &&
       totalGuests <= room.guests &&
       totalValue > 0 &&
       !isSuccess
@@ -215,6 +214,11 @@ const Reserve = () => {
                     !d || d.isBefore(new Date())
                   }
                   placeholder="Select your Check-In"
+                  status={
+                    checkIn?.isBefore(dayjs())
+                      ? 'error'
+                      : ''
+                  }
                 />
                 <LabelTo>To: </LabelTo>
                 <DatePicker
@@ -226,6 +230,13 @@ const Reserve = () => {
                     d.isBefore(checkIn?.add(1, 'day'))
                   }
                   placeholder="Select your Check-Out"
+                  status={
+                    checkOut?.isBefore(dayjs()) ||
+                    checkOut?.isBefore(checkIn) ||
+                    checkOut?.isSame(checkIn)
+                      ? 'error'
+                      : ''
+                  }
                 />
               </li>
               <li>
@@ -238,6 +249,14 @@ const Reserve = () => {
                     value: person,
                     label: person,
                   }))}
+                  // @todo change this inline style to styled component
+                  style={{ minWidth: '155px' }}
+                  status={
+                    parseInt(adults) === 0 ||
+                    parseInt(adults) > 5
+                      ? 'error'
+                      : ''
+                  }
                 />
                 <LabelChildren>Children: </LabelChildren>
                 <Select
@@ -248,6 +267,11 @@ const Reserve = () => {
                     value: person,
                     label: person,
                   }))}
+                  // @todo change this inline style to styled component
+                  style={{ minWidth: '120px' }}
+                  status={
+                    parseInt(adults) > 5 ? 'error' : ''
+                  }
                 />
               </li>
               <li>Total Guests: {totalGuests}</li>

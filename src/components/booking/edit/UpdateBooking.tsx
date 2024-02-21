@@ -267,6 +267,12 @@ const UpdateBooking = () => {
             <DatePicker
               onChange={setCheckIn}
               placeholder="Select Check-In"
+              disabledDate={(d) =>
+                !d || d.isBefore(new Date())
+              }
+              status={
+                checkIn?.isBefore(dayjs()) ? 'error' : ''
+              }
             />
           </Form.Item>
           <Form.Item
@@ -277,6 +283,18 @@ const UpdateBooking = () => {
             <DatePicker
               onChange={setCheckOut}
               placeholder="Select Check-Out"
+              disabledDate={(d) =>
+                !d ||
+                d.isBefore(new Date()) ||
+                d.isBefore(checkIn?.add(1, 'day'))
+              }
+              status={
+                checkOut?.isBefore(dayjs()) ||
+                checkOut?.isBefore(checkIn) ||
+                checkOut?.isSame(checkIn)
+                  ? 'error'
+                  : ''
+              }
             />
           </Form.Item>
           <Form.Item
@@ -290,6 +308,12 @@ const UpdateBooking = () => {
                 value: person,
                 label: person,
               }))}
+              status={
+                parseInt(adults) === 0 ||
+                parseInt(adults) > 5
+                  ? 'error'
+                  : ''
+              }
             />
           </Form.Item>
           <Form.Item
@@ -303,6 +327,7 @@ const UpdateBooking = () => {
                 value: person,
                 label: person,
               }))}
+              status={parseInt(adults) > 5 ? 'error' : ''}
             />
           </Form.Item>
           <Button
