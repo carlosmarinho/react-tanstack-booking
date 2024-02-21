@@ -1,5 +1,5 @@
-enum StatusType {
-  initial = 'Initial',
+export enum StatusType {
+  pending = 'Pending',
   confirmed = 'Confirmed',
   paid = 'Paid',
   canceled = 'Canceled',

@@ -1,4 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import { sendApiRequest } from '../../../helpers/sendApiRequest';
 import {
   Alert,
@@ -12,7 +15,9 @@ import { getIMageFromData } from '../../../helpers/getImageFromData';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { IEditBooking } from '../edit/IEditBooking';
+import { StatusType } from '../create/ICreateBooking';
 
 const { Text } = Typography;
 
@@ -52,6 +57,7 @@ const StatusButtonBar = styled.div`
 const ListBooking: FC<IListBooking> = ({
   isAdmin = false,
 }) => {
+  const [bookingEditId, setBookingEditId] = useState(0);
   const { isLoading, data } = useQuery({
     queryKey: ['booking'],
     queryFn: async () => {
@@ -62,7 +68,22 @@ const ListBooking: FC<IListBooking> = ({
     },
   });
 
-  console.log('\n\n***\n daaaaaata: ', data, '\n***\n');
+  const { mutate, isPending, isSuccess } = useMutation({
+    mutationKey: ['changeReservation'],
+    mutationFn: (data: IEditBooking) =>
+      sendApiRequest('/bookings', 'PATCH', data),
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      setBookingEditId(0);
+    }
+  }, [isSuccess]);
+
+  const handleConfirm = (id: number) => {
+    setBookingEditId(id);
+    mutate({ id, status: StatusType.confirmed });
+  };
 
   const showStatusMessage = (status: string) => {
     switch (status) {
@@ -202,17 +223,46 @@ const ListBooking: FC<IListBooking> = ({
             <RightList>
               {isAdmin ? (
                 <>
-                  <StyledButton type="primary">
+                  <StyledButton
+                    disabled={
+                      parseInt(item.id) === bookingEditId
+                    }
+                    onClick={() =>
+                      handleConfirm(parseInt(item.id))
+                    }
+                    type="primary"
+                  >
+                    {parseInt(item.id) ===
+                      bookingEditId && (
+                      <Spin size="small"></Spin>
+                    )}
                     Confirm Booking
                   </StyledButton>
                   <StyledLink
                     to={`/admin/booking/edit/${item.id}`}
                   >
-                    <StyledButton>
+                    <StyledButton
+                      disabled={
+                        parseInt(item.id) === bookingEditId
+                      }
+                    >
+                      {parseInt(item.id) ===
+                        bookingEditId && (
+                        <Spin size="small"></Spin>
+                      )}
                       Edit Booking
                     </StyledButton>
                   </StyledLink>
-                  <StyledButton danger>
+                  <StyledButton
+                    danger
+                    disabled={
+                      parseInt(item.id) === bookingEditId
+                    }
+                  >
+                    {parseInt(item.id) ===
+                      bookingEditId && (
+                      <Spin size="small"></Spin>
+                    )}
                     Remove Booking
                   </StyledButton>
                 </>
