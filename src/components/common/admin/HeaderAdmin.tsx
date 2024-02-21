@@ -10,6 +10,7 @@ const ContainerLogo = styled.div`
   width: 40px;
   minwidth: 40px;
   height: 40px;
+  margin-right: 20px;
 `;
 
 /**

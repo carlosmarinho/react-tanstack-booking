@@ -137,7 +137,10 @@ const ListBooking: FC<IListBooking> = ({
     mutateDelete({ id });
   };
 
-  const showStatusMessage = (status: string) => {
+  const showStatusMessage = (
+    status: string,
+    id: number,
+  ) => {
     switch (status) {
       case 'pending':
         return (
@@ -149,7 +152,9 @@ const ListBooking: FC<IListBooking> = ({
             <br />
             <StatusButtonBar>
               <Button danger>Delete!</Button>
-              <Button>Edit!</Button>
+              <Link to={`/my-bookings/${id}`}>
+                <Button>Edit!</Button>
+              </Link>
             </StatusButtonBar>
           </>
         );
@@ -161,7 +166,8 @@ const ListBooking: FC<IListBooking> = ({
               message="Confirmed and waiting Payment"
             />
             <br />
-            <Button>Pay it!</Button>
+            {/* @todo implement payment */}
+            <StyledButton>Pay it!</StyledButton>
           </>
         );
       case 'paid':
@@ -323,7 +329,10 @@ const ListBooking: FC<IListBooking> = ({
                   </StyledButton>
                 </>
               ) : (
-                showStatusMessage(item.status)
+                showStatusMessage(
+                  item.status,
+                  parseInt(item.id),
+                )
               )}
             </RightList>
           </List.Item>
