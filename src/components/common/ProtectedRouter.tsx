@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import AuthContext from '../../context/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,9 +10,11 @@ export const ProtectedRoute = ({
   const { isLogged } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  if (!isLogged) {
-    navigate('/', { replace: true });
-  }
+  useEffect(() => {
+    if (!isLogged) {
+      navigate('/', { replace: true });
+    }
+  }, [isLogged]);
 
   return children;
 };
