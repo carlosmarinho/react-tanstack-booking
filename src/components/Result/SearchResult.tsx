@@ -223,17 +223,21 @@ const SearchResult: FC<ISearchBar> = ({
                           <Text strong>${room.rate}</Text>
                           <Link
                             to={`/reserve/${room.id}${
-                              searchBarValues?.startAt &&
-                              `/${searchBarValues.startAt}`
+                              searchBarValues?.startAt
+                                ? `/${searchBarValues.startAt}`
+                                : ''
                             }${
-                              searchBarValues?.endAt &&
-                              `/${searchBarValues.endAt}`
+                              searchBarValues?.endAt
+                                ? `/${searchBarValues.endAt}`
+                                : ''
                             }${
-                              searchBarValues?.adult &&
-                              `/${searchBarValues.adult}`
+                              searchBarValues?.adult
+                                ? `/${searchBarValues.adult}`
+                                : ''
                             }${
-                              searchBarValues?.children &&
-                              `/${searchBarValues.children}`
+                              searchBarValues?.children
+                                ? `/${searchBarValues.children}`
+                                : ''
                             }`}
                           >
                             <Button danger>Reserve</Button>
