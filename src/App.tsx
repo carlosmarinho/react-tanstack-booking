@@ -13,6 +13,7 @@ import ReservePage from './pages/Reserve';
 import HomePageAdmin from './pages/admin/Home';
 import { AuthProvider } from './context/auth';
 import NotFound from './pages/NotFound';
+import ProtectedRoute from './components/common/ProtectedRouter';
 
 const queryClient = new QueryClient();
 
@@ -29,14 +30,16 @@ const App = () => {
             />
             <Route
               path="/admin/"
-              element={<HomePageAdmin />}
+              element={
+                <ProtectedRoute>
+                  <HomePageAdmin />
+                </ProtectedRoute>
+              }
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </AuthProvider>
-
-      {/* <HomePage /> */}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

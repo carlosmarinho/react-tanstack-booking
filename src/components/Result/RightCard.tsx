@@ -36,8 +36,8 @@ const RightCard: FC<IRightCard> = ({
       <TopIMage>
         <Text>{name}</Text>
         <div>
-          {[...Array(rating)].map((rate) => (
-            <StarTwoTone key={rate} twoToneColor="yellow" />
+          {[...Array(rating)].map((rate, idx) => (
+            <StarTwoTone key={idx} twoToneColor="yellow" />
           ))}
         </div>
       </TopIMage>

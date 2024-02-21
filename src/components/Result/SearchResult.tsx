@@ -14,7 +14,7 @@ import styled from 'styled-components';
 import ActionItems from './ActionItems';
 import RightCard from './RightCard';
 import { ISearchBarValues } from '../common/ISearchBar';
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 
 const { Paragraph, Text } = Typography;
 
@@ -184,7 +184,7 @@ const SearchResult: FC<ISearchBar> = ({
                 <RoomWrapper>
                   {rooms?.data.map((room) => {
                     return (
-                      <>
+                      <Fragment key={room.id}>
                         <RoomImageWrapper>
                           <img
                             width={60}
@@ -240,7 +240,7 @@ const SearchResult: FC<ISearchBar> = ({
                           </Link>
                         </ButtonBar>
                         <Divider />
-                      </>
+                      </Fragment>
                     );
                   })}
                 </RoomWrapper>

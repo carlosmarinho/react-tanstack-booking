@@ -1,47 +1,13 @@
-import React, { useContext, useState } from 'react';
-import {
-  UserOutlined,
-  LogoutOutlined,
-} from '@ant-design/icons';
+import React from 'react';
 import CreateBooking from '../../components/booking/create/CreateBooking';
 import ListBooking from '../../components/booking/list/ListBooking';
-import type { MenuProps } from 'antd';
-import { Layout, Menu, theme } from 'antd';
+import { Layout, theme } from 'antd';
 import Footer from '../../components/common/Footer';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import AuthContext from '../../context/auth';
 
-const { Header, Content, Sider } = Layout;
+import HeaderAdmin from '../../components/common/admin/HeaderAdmin';
+import SiderAdmin from '../../components/common/admin/SiderAdmin';
 
-const ContainerLogo = styled.div`
-  width: 40px;
-  minwidth: 40px;
-  height: 40px;
-`;
-
-type MenuItem = Required<MenuProps>['items'][number];
-
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem;
-}
-
-/**
- * @todo we should move it to a separate file
- */
-const items1: MenuProps['items'] = [
-  { key: 'admin-text', label: 'Administrator' },
-];
+const { Header, Content } = Layout;
 
 /**
  * @todo 1 remove inline css and add in styled-components
@@ -49,67 +15,15 @@ const items1: MenuProps['items'] = [
  * to duplicate this layout in every page
  */
 const HomePageAdmin = () => {
-  const { logout } = useContext(AuthContext);
-  const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  /**
-   * @todo we should move it to a separate file
-   */
-  const items: MenuItem[] = [
-    getItem('User', 'sub1', <UserOutlined />, [
-      getItem(
-        <Link to="/admin/profile">Profile</Link>,
-        '3',
-      ),
-    ]),
-    getItem(
-      <a href="#" onClick={logout}>
-        Logout
-      </a>,
-      '4',
-      <LogoutOutlined />,
-    ),
-  ];
-
   return (
     <Layout>
-      <Header
-        style={{ display: 'flex', alignItems: 'center' }}
-      >
-        <ContainerLogo className="demo-logo" style={{}}>
-          <Link to="/admin  ">
-            <img
-              src="/logo-my-booking-2.png"
-              alt="Logo My Booking"
-              width="40"
-            />
-          </Link>
-        </ContainerLogo>{' '}
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['2']}
-          items={items1}
-          style={{ flex: 1, minWidth: 0 }}
-        />
-      </Header>
+      <HeaderAdmin />
       <Layout style={{ minHeight: '100vh' }}>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-        >
-          <div className="demo-logo-vertical" />
-          <Menu
-            theme="dark"
-            defaultSelectedKeys={['1']}
-            mode="inline"
-            items={items}
-          />
-        </Sider>
+        <SiderAdmin />
         <Layout>
           <Header
             style={{
