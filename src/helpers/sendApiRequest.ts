@@ -3,13 +3,6 @@ type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 const BASE_URL = process.env.REACT_APP_API_URL;
 const TOKEN = process.env.REACT_APP_API_TOKEN;
 
-console.log(
-  '\n\n***\n environment: ',
-  process.env,
-  process.env.REACT_APP_API_URL,
-  '\n***\n',
-);
-
 function returnCorrectRequest(
   method: Method,
   data: unknown,

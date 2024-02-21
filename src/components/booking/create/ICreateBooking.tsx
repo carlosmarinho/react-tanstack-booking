@@ -1,6 +1,6 @@
 export enum StatusType {
   pending = 'Pending',
-  confirmed = 'Confirmed',
+  confirmed = 'confirmed',
   paid = 'Paid',
   canceled = 'Canceled',
   deleted = 'Deleted',
