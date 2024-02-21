@@ -42,7 +42,7 @@ const HomePageAdmin = () => {
             >
               <h1>HostFully Booking Administrator</h1>
               <CreateBooking />
-              <ListBooking />
+              <ListBooking isAdmin={true} />
             </div>
           </Content>
           <Footer />

@@ -9,6 +9,7 @@ import {
   List,
   Spin,
   Typography,
+  message,
 } from 'antd';
 import { Ibooking } from '../IBooking';
 import { getIMageFromData } from '../../../helpers/getImageFromData';
@@ -57,6 +58,7 @@ const StatusButtonBar = styled.div`
 const ListBooking: FC<IListBooking> = ({
   isAdmin = false,
 }) => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [bookingEditId, setBookingEditId] = useState(0);
   const { isLoading, data } = useQuery({
     queryKey: ['booking'],
@@ -68,21 +70,46 @@ const ListBooking: FC<IListBooking> = ({
     },
   });
 
-  const { mutate, isSuccess } = useMutation({
+  const { mutate, isSuccess, isError } = useMutation({
     mutationKey: ['changeReservation'],
     mutationFn: (data: IEditBooking) =>
       sendApiRequest('/bookings', 'PATCH', data),
   });
 
+  const {
+    mutate: mutateDelete,
+    isSuccess: isSuccessDelete,
+    isError: isErrorDelete,
+  } = useMutation({
+    mutationKey: ['changeReservation'],
+    mutationFn: (data: IEditBooking) =>
+      sendApiRequest('/bookings', 'DELETE', data),
+  });
+
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess || isSuccessDelete) {
       setBookingEditId(0);
     }
-  }, [isSuccess]);
+  }, [isSuccess, isError, isErrorDelete, isSuccessDelete]);
+
+  useEffect(() => {
+    if (isError || isErrorDelete) {
+      messageApi.open({
+        type: 'error',
+        content: 'Something wrong happened!!!',
+      });
+      setBookingEditId(0);
+    }
+  }, [isSuccess, isError, isErrorDelete, isSuccessDelete]);
 
   const handleConfirm = (id: number) => {
     setBookingEditId(id);
     mutate({ id, status: StatusType.confirmed });
+  };
+
+  const handleDelete = (id: number) => {
+    setBookingEditId(id);
+    mutateDelete({ id });
   };
 
   const showStatusMessage = (status: string) => {
@@ -131,6 +158,7 @@ const ListBooking: FC<IListBooking> = ({
 
   return (
     <>
+      {contextHolder}
       {isLoading && (
         <Spin tip="Loading" size="large">
           <div className="content" />
@@ -254,6 +282,9 @@ const ListBooking: FC<IListBooking> = ({
                     </StyledButton>
                   </StyledLink>
                   <StyledButton
+                    onClick={() =>
+                      handleDelete(parseInt(item.id))
+                    }
                     danger
                     disabled={
                       parseInt(item.id) === bookingEditId
