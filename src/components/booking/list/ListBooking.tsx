@@ -68,7 +68,7 @@ const ListBooking: FC<IListBooking> = ({
     },
   });
 
-  const { mutate, isPending, isSuccess } = useMutation({
+  const { mutate, isSuccess } = useMutation({
     mutationKey: ['changeReservation'],
     mutationFn: (data: IEditBooking) =>
       sendApiRequest('/bookings', 'PATCH', data),
