@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import {
   UserOutlined,
   LogoutOutlined,
+  HomeOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
@@ -45,7 +46,17 @@ const SiderAdmin = () => {
    * @todo we should move it to a separate file
    */
   const items: MenuItem[] = [
-    getItem('User', 'sub1', <UserOutlined />, [
+    getItem('Booking', 'booking', <HomeOutlined />, [
+      getItem(
+        <Link to="/admin/booking/create">Create</Link>,
+        '1',
+      ),
+      getItem(
+        <Link to="/admin/booking/list">List</Link>,
+        '2',
+      ),
+    ]),
+    getItem('User', 'user', <UserOutlined />, [
       getItem(
         <Link to="/admin/profile">Profile</Link>,
         '3',

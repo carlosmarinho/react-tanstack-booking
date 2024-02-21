@@ -14,6 +14,8 @@ import HomePageAdmin from './pages/admin/Home';
 import { AuthProvider } from './context/auth';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/common/ProtectedRouter';
+import BookingCreateAdmin from './pages/admin/booking/BookingCreate';
+import BookingListAdmin from './pages/admin/booking/BookingLis';
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,22 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <HomePageAdmin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/booking/create"
+              element={
+                <ProtectedRoute>
+                  <BookingCreateAdmin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/booking/list"
+              element={
+                <ProtectedRoute>
+                  <BookingListAdmin />
                 </ProtectedRoute>
               }
             />
