@@ -47,7 +47,9 @@ export async function sendApiRequest<T>(
   return respData;
 }
 
-/**@todo for some reason strapi api don't return data and meta for user */
+/**@todo for some reason strapi api don't return data and meta for user,
+ * for this reason we need to create a second sendApiRequest that is specifically for user.
+ * We could improve it merging this 2 functions in one*/
 export async function sendApiRequestforUser<T>(
   url: string,
   method: Method,

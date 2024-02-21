@@ -1,46 +1,90 @@
-# Getting Started with Create React App
+# Installation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Run the following commands
 
-## Available Scripts
+- Clone the application from https://github.com/carlosmarinho/react-tanstack-booking
 
-In the project directory, you can run:
+  ```
+  git clone https://github.com/carlosmarinho/react-tanstack-booking
+  ```
 
-### `npm start`
+- Get into the cloned application folder
 
-Runs the app in the development mode.\
+  ```
+  cd react-tanstack-booking
+  ```
+
+- Run npm install to install the package dependancy
+
+  ```
+  npm install
+  ```
+
+- We don't need to install the backend cause I have deployed it to heroku, so we just need to run the local pointing to the backend on production. Run npm run start:production to start the application
+
+  ```
+  npm run start:production
+  ```
+
+The last command (npm run servers) will run the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+# Tecnologies used
 
-### `npm test`
+- React
+- Hooks
+- Context
+- tanstack/react-query
+- CSS in JS (Styled Components)
+- Jest
+- React Testing Library
+- Strapi
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# About the application
 
-### `npm run build`
+## Development
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- I started developing the application and decided to use Tanstack React Query, Styled components. I started creating the admin part, only to do the booking and list, but didn't finish it. As time goes by, and I was lacking time I went to do the booking website, where you can search Hotels, and do the reservation. As I had basically 1 weekend and more 2 days to do all booking code, I didn't have time to work with TDD nor implemnent much unit test and E2E test.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Although I have implemented one custom hook (to do the booking) and one context for authentication, still there are rooms for improvements in this area, and I'll talk more about it in Refatory section
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+I decided to use all those thechnology, then you could have a good idea how I can develop a real application.
 
-### `npm run eject`
+## Refactory (@todo)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### layouts and ContextApi
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- I could have created 2 Layouts components one for admin and other for website, and on page component I should pass to the specific layout the children to it.
+- Use ContextApi to avoid prop drilling for the search part. I need to pass the function search from parent component passing through 2 componets, when returning the result need to pass the return to the result component and show the search result, using contextApi we could avoid passing those props
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Hooks
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- I created one custom hooks to do the reservation, but I miss at least another custom hooks for the search part.
+- I need to take a look all over the application to understand the necessity of others custom hooks
 
-## Learn More
+### Tanstack
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- I need to setup a better store of the tanstack react query, for better caching and querys and better reusability of the querys.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### CSS styled components
+
+- I generally like to let the css styled inside the component, but when this css code is too big I prefer to put in separate styled file, with this in mind I need to take a look at the components to understand the need to separate the css from the component.
+
+### Test
+
+- I implemented only one unit test with react testing library and jest because of the lack of time
+- Increase the test coverage of the application
+- I didn't have time to implement no E2E test, but I could use cypress or playright
+
+### Login
+
+- In this moment we only have a mocked login, when you click on the login link we don't redirect the user to a login page, where can add login information and do the login
+
+### Others
+
+- When doing the booking check the room availability for the days required
+- It's not specified on the test but we can make a crud for location, city, state, user and other
+
+## Testing
+
+- Although I implemented only one unit test, you can run the test using the command `npm run test`
