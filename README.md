@@ -80,6 +80,14 @@ I decided to use all those thechnology, then you could have a good idea how I ca
 
 - In this moment we only have a mocked login, when you click on the login link we don't redirect the user to a login page, where can add login information and do the login
 
+### Strapi
+
+- Strapi (https://strapi.io/) is the backend that I'm using to generate the Rest API, I'm facing some issues with it, I'm getting <b>405 Method Not Allowed</b> (strict-origin-when-cross-origin) when trying to DELETE, PATCH OR PUT, it means that I'm not able to remove or update the bookings
+
+### @todo
+
+- If you ctrl+f the code base for @todo, you will find a lot of part of the code that needs to be improved.
+
 ### Others
 
 - When doing the booking check the room availability for the days required

@@ -16,9 +16,10 @@ import { getIMageFromData } from '../../../helpers/getImageFromData';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FC, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { IEditBooking } from '../edit/IEditBooking';
 import { StatusType } from '../create/ICreateBooking';
+import AuthContext from '../../../context/auth';
 
 const { Text } = Typography;
 
@@ -58,24 +59,48 @@ const StatusButtonBar = styled.div`
 const ListBooking: FC<IListBooking> = ({
   isAdmin = false,
 }) => {
+  const { authTokens } = useContext(AuthContext);
   const [messageApi, contextHolder] = message.useMessage();
   const [bookingEditId, setBookingEditId] = useState(0);
+
+  /**
+   * If isAdmin we show all bookings, else it should come from my bookings
+   * and we need to show only the booking from the user logged
+   */
+  const getUrlBooking = () => {
+    return isAdmin
+      ? '/bookings?populate[location][populate][0]=featuredImage&populate[room][populate][0]=featuredImage'
+      : `/bookings?filters[userId]=${authTokens.id}&populate[location][populate][0]=featuredImage&populate[room][populate][0]=featuredImage`;
+  };
+
   const { isLoading, data } = useQuery({
     queryKey: ['booking'],
     queryFn: async () => {
       return await sendApiRequest<Ibooking[]>(
-        '/bookings?populate[location][populate][0]=featuredImage&populate[room][populate][0]=featuredImage',
+        getUrlBooking(),
         'GET',
       );
     },
   });
 
+  /**
+   * @todo the strapi backend is not allowing PUT, PATCH nor DELETE, working only on POST and GET
+   * i tried hard to fix it research without success. I even look at strapi
+   * website:
+   *
+   */
   const { mutate, isSuccess, isError } = useMutation({
     mutationKey: ['changeReservation'],
     mutationFn: (data: IEditBooking) =>
       sendApiRequest('/bookings', 'PATCH', data),
   });
 
+  /**
+   * @todo the strapi backend is not allowing PUT, PATCH nor DELETE,  working only on POST and GET
+   * i tried hard to fix it research without success. I even look at strapi
+   * website:
+   *
+   */
   const {
     mutate: mutateDelete,
     isSuccess: isSuccessDelete,
