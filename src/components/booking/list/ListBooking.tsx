@@ -1,6 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { sendApiRequest } from '../../../helpers/sendApiRequest';
-import { Button, List, Spin, Typography } from 'antd';
+import {
+  Alert,
+  Button,
+  List,
+  Spin,
+  Typography,
+} from 'antd';
 import { Ibooking } from '../IBooking';
 import { getIMageFromData } from '../../../helpers/getImageFromData';
 import dayjs from 'dayjs';
@@ -29,6 +35,16 @@ interface IListBooking {
   isAdmin?: boolean;
 }
 
+const StatusButtonBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  button {
+    min-width: 80px;
+  }
+`;
+
 /**
  * @todo we need to implement the login to show admin data, at the moment we keep with
  * passing the props from website or admin
@@ -45,6 +61,52 @@ const ListBooking: FC<IListBooking> = ({
       );
     },
   });
+
+  console.log('\n\n***\n daaaaaata: ', data, '\n***\n');
+
+  const showStatusMessage = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return (
+          <>
+            <Alert
+              type="warning"
+              message="Waiting for confirmation"
+            />
+            <br />
+            <StatusButtonBar>
+              <Button danger>Delete!</Button>
+              <Button>Edit!</Button>
+            </StatusButtonBar>
+          </>
+        );
+      case 'confirmed':
+        return (
+          <>
+            <Alert
+              type="warning"
+              message="Confirmed and waiting Payment"
+            />
+            <br />
+            <Button>Pay it!</Button>
+          </>
+        );
+      case 'paid':
+        return (
+          <Alert
+            type="warning"
+            message="Your booking is Confirmed and Paid"
+          />
+        );
+      default:
+        return (
+          <Alert
+            type="success"
+            message="Confirmed & Paid"
+          />
+        );
+    }
+  };
 
   return (
     <>
@@ -138,7 +200,7 @@ const ListBooking: FC<IListBooking> = ({
               }
             />
             <RightList>
-              {isAdmin && (
+              {isAdmin ? (
                 <>
                   <StyledButton type="primary">
                     Confirm Booking
@@ -154,6 +216,8 @@ const ListBooking: FC<IListBooking> = ({
                     Remove Booking
                   </StyledButton>
                 </>
+              ) : (
+                showStatusMessage(item.status)
               )}
             </RightList>
           </List.Item>
