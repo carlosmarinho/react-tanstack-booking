@@ -58,8 +58,8 @@ const Reserve = () => {
     roomId,
     checkIn: strCheckIn,
     checkOut: strCheckOut,
-    adults: strAdults = '0',
-    children: strChildren = '0',
+    adults: strAdults = '',
+    children: strChildren = '',
   } = useParams();
 
   const {
@@ -120,6 +120,8 @@ const Reserve = () => {
   };
 
   const { data: location } = room?.location || {};
+
+  console.log('\n\n***\n adults : ', adults, '\n***\n');
 
   return (
     <>
@@ -242,7 +244,9 @@ const Reserve = () => {
               <li>
                 Adults:
                 <Select
-                  defaultValue={adults}
+                  defaultValue={
+                    adults !== '' ? adults : null
+                  }
                   onChange={handleChangeAdult}
                   placeholder="Quantity Adult"
                   options={adultsArray?.map((person) => ({
@@ -260,7 +264,9 @@ const Reserve = () => {
                 />
                 <LabelChildren>Children: </LabelChildren>
                 <Select
-                  defaultValue={children}
+                  defaultValue={
+                    children !== '' ? children : null
+                  }
                   onChange={handleChangeChildren}
                   placeholder="Quantity Adult"
                   options={childrenArray?.map((person) => ({
