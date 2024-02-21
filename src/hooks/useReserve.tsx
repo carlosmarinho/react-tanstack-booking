@@ -84,6 +84,7 @@ export function useReserve({
             users_permissions_user: user || authTokens.id,
             userId: user || authTokens.id,
             room: room.id,
+            location: room.location?.data.id,
             nights: night,
             nightValue: room?.rate,
             totalValue: totalValue,
