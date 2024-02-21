@@ -127,10 +127,8 @@ const Header: FC<IHeader> = ({
       label: `Welcome ${authTokens.username.toUpperCase()}!`,
     },
     {
-      key: 'my-reservation',
-      label: (
-        <Link to="/my-reservation">My Reservation</Link>
-      ),
+      key: 'my-bookings',
+      label: <Link to="/my-bookings">My Bookings</Link>,
     },
     {
       key: 'logout',

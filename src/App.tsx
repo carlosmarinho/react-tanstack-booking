@@ -17,6 +17,7 @@ import ProtectedRoute from './components/common/ProtectedRouter';
 import BookingCreateAdmin from './pages/admin/booking/BookingCreate';
 import BookingListAdmin from './pages/admin/booking/BookingLis';
 import BookingEditAdmin from './pages/admin/booking/BookingEdit';
+import MyBookings from './pages/MyBookings';
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,14 @@ const App = () => {
             <Route
               path="/reserve/:roomId/:checkIn?/:checkOut?/:adults?/:children?"
               element={<ReservePage />}
+            />
+            <Route
+              path="/my-bookings"
+              element={
+                <ProtectedRoute>
+                  <MyBookings />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/admin/"
