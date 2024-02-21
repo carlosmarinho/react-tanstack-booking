@@ -21,13 +21,12 @@ import { useReserve } from '../../../hooks/useReserve';
 
 const CreateBooking = () => {
   const [form] = Form.useForm();
-  const totalValue = 0;
 
   const values = Form.useWatch([], form);
   const {
     cityId,
     locationId,
-    room,
+    roomId,
     checkIn,
     checkOut,
     adults,
@@ -38,14 +37,6 @@ const CreateBooking = () => {
     locationId: 0,
     roomId: 0,
   };
-
-  console.log(
-    '\n\n***\n roooom: ',
-    room,
-    checkIn,
-    checkOut,
-    '\n***\n',
-  );
 
   const {
     isPending,
@@ -59,7 +50,7 @@ const CreateBooking = () => {
     // checkOut,
     doReservation,
   } = useReserve({
-    roomId: room,
+    roomId,
     strCheckIn: checkIn?.format('YYYY/MM/DD'),
     strCheckOut: checkOut?.format('YYYY/MM/DD'),
   });
@@ -104,14 +95,24 @@ const CreateBooking = () => {
     }
   }, [isSuccess]);
 
+  console.log(
+    '\n\n***\n Nights: : ',
+    night,
+    adults,
+    children,
+    checkOut,
+    isSuccess,
+    // room,
+    '\n***\n',
+  );
+
   const canReserve = () => {
     return (
       night > 0 &&
       parseInt(adults) + parseInt(children) > 0 &&
-      room?.guests &&
-      parseInt(adults) + parseInt(children) <=
-        room.guests &&
-      totalValue > 0 &&
+      // room?.guests &&
+      parseInt(adults) + parseInt(children) <= roomId &&
+      // room?.guests &&
       !isSuccess
     );
   };
@@ -131,8 +132,9 @@ const CreateBooking = () => {
         name="create-booking"
         onFinish={() =>
           doReservation({
-            room,
-            totalValue,
+            room: roomId,
+            // totalValue: parseInt(room?.rate) * night,
+            totalValue: night,
             adults: parseInt(adults),
             children: parseInt(children),
             user,
@@ -180,7 +182,7 @@ const CreateBooking = () => {
         )}
         {cityId && locationId && locations && (
           <Form.Item
-            name="room"
+            name="roomId"
             label="Room"
             rules={[{ required: true }]}
           >

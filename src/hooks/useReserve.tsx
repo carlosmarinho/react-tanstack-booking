@@ -82,6 +82,7 @@ export function useReserve({
             startAt: checkIn.toDate(),
             endAt: checkOut.toDate(),
             users_permissions_user: user || authTokens.id,
+            userId: user || authTokens.id,
             room: room.id,
             nights: night,
             nightValue: room?.rate,
@@ -107,6 +108,7 @@ export function useReserve({
     checkIn,
     checkOut,
     night,
+    setNight,
     doReservation,
   };
 }

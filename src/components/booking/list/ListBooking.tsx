@@ -5,6 +5,7 @@ import { Ibooking } from '../IBooking';
 import { getIMageFromData } from '../../../helpers/getImageFromData';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const { Text } = Typography;
 
@@ -18,6 +19,10 @@ const StyledButton = styled(Button)`
   margin-bottom: 10px;
   width: 100%;
 `;
+
+const StyledLink = styled(Link)`
+width: 100%;
+}`;
 
 const ListBooking = () => {
   const { isLoading, data } = useQuery({
@@ -38,17 +43,6 @@ const ListBooking = () => {
         </Spin>
       )}
       <h2>Booking List</h2>
-      {/* <List
-        dataSource={data}
-        renderItem={(item) => (
-          <List.Item>
-            <List.Item.Meta
-              title={item.location}
-              description={`From: ${item.startAt} To: ${item.endAt}`}
-            />
-          </List.Item>  
-        )}
-      /> */}
       <List
         pagination={{ position: 'bottom', align: 'center' }}
         dataSource={data}
@@ -59,11 +53,11 @@ const ListBooking = () => {
                 <img
                   width={200}
                   height={200}
-                  alt={`Location: ${item.location.data.name}`}
+                  alt={`Location: ${item.location.data?.name}`}
                   src={
-                    item.location.data.featuredImage
+                    item.location.data?.featuredImage
                       ? getIMageFromData(
-                          item.location.data.featuredImage
+                          item.location.data?.featuredImage
                             .data,
                         )
                       : '/location-default.jpg'
@@ -72,8 +66,8 @@ const ListBooking = () => {
               }
               title={
                 <>
-                  {item.location.data.type} -{' '}
-                  {item.location.data.name}
+                  {item.location.data?.type} -{' '}
+                  {item.location.data?.name}
                 </>
               }
               description={
@@ -117,7 +111,7 @@ const ListBooking = () => {
                       {dayjs(item.startAt).format(
                         'MM/DD/YYYY',
                       )}{' '}
-                      {item.location.data.checkIn}
+                      {item.location.data?.checkIn}
                     </Text>
                   </div>
                   <div>
@@ -126,7 +120,7 @@ const ListBooking = () => {
                       {dayjs(item.endAt).format(
                         'MM/DD/YYYY',
                       )}{' '}
-                      {item.location.data.checkOut}
+                      {item.location.data?.checkOut}
                     </Text>
                   </div>
                 </>
@@ -136,7 +130,11 @@ const ListBooking = () => {
               <StyledButton type="primary">
                 Confirm Booking
               </StyledButton>
-              <StyledButton>Edit Booking</StyledButton>
+              <StyledLink
+                to={`/admin/booking/edit/${item.id}`}
+              >
+                <StyledButton>Edit Booking</StyledButton>
+              </StyledLink>
               <StyledButton danger>
                 Remove Booking
               </StyledButton>
