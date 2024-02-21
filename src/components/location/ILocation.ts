@@ -28,6 +28,8 @@ export interface ILocation {
   rooms?: { data: IRoom[] };
   rating: number;
   website: string;
+  checkIn?: string;
+  checkOut?: string;
   createdAt: Date;
   updatedAt: Date;
 }

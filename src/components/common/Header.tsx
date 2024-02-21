@@ -97,6 +97,9 @@ const Header: FC<IHeader> = ({
     });
   };
 
+  /**
+   * @todo we should move it to a separate file
+   */
   const leftItems = [
     {
       key: 'hotels',
