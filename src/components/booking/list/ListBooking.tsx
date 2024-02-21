@@ -6,6 +6,7 @@ import { getIMageFromData } from '../../../helpers/getImageFromData';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { FC } from 'react';
 
 const { Text } = Typography;
 
@@ -24,7 +25,17 @@ const StyledLink = styled(Link)`
 width: 100%;
 }`;
 
-const ListBooking = () => {
+interface IListBooking {
+  isAdmin?: boolean;
+}
+
+/**
+ * @todo we need to implement the login to show admin data, at the moment we keep with
+ * passing the props from website or admin
+ */
+const ListBooking: FC<IListBooking> = ({
+  isAdmin = false,
+}) => {
   const { isLoading, data } = useQuery({
     queryKey: ['booking'],
     queryFn: async () => {
@@ -127,17 +138,23 @@ const ListBooking = () => {
               }
             />
             <RightList>
-              <StyledButton type="primary">
-                Confirm Booking
-              </StyledButton>
-              <StyledLink
-                to={`/admin/booking/edit/${item.id}`}
-              >
-                <StyledButton>Edit Booking</StyledButton>
-              </StyledLink>
-              <StyledButton danger>
-                Remove Booking
-              </StyledButton>
+              {isAdmin && (
+                <>
+                  <StyledButton type="primary">
+                    Confirm Booking
+                  </StyledButton>
+                  <StyledLink
+                    to={`/admin/booking/edit/${item.id}`}
+                  >
+                    <StyledButton>
+                      Edit Booking
+                    </StyledButton>
+                  </StyledLink>
+                  <StyledButton danger>
+                    Remove Booking
+                  </StyledButton>
+                </>
+              )}
             </RightList>
           </List.Item>
         )}
