@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { sendApiRequest } from '../../../helpers/sendApiRequest';
-import { List, Spin, Typography } from 'antd';
+import { Button, List, Spin, Typography } from 'antd';
 import { Ibooking } from '../IBooking';
 import { getIMageFromData } from '../../../helpers/getImageFromData';
 import dayjs from 'dayjs';
@@ -12,6 +12,11 @@ const RightList = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
+`;
+
+const StyledButton = styled(Button)`
+  margin-bottom: 10px;
+  width: 100%;
 `;
 
 const ListBooking = () => {
@@ -104,6 +109,9 @@ const ListBooking = () => {
                     <Text>{item.totalValue}</Text>
                   </div>
                   <div>
+                    {/**
+                     * @todo remove seconds from checkin and checkout
+                     */}
                     <Text strong>Check In: </Text>
                     <Text>
                       {dayjs(item.startAt).format(
@@ -125,9 +133,13 @@ const ListBooking = () => {
               }
             />
             <RightList>
-              {/**
-               * @todo remove seconds from checkin and checkout
-               */}
+              <StyledButton type="primary">
+                Confirm Booking
+              </StyledButton>
+              <StyledButton>Edit Booking</StyledButton>
+              <StyledButton danger>
+                Remove Booking
+              </StyledButton>
             </RightList>
           </List.Item>
         )}
