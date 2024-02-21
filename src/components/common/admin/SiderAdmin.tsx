@@ -1,4 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   UserOutlined,
   LogoutOutlined,
@@ -34,13 +38,18 @@ function getItem(
  */
 const SiderAdmin = () => {
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const { logout, isLogged } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = () => {
     logout();
-    navigate('/', { replace: true });
   };
+
+  useEffect(() => {
+    if (!isLogged) {
+      navigate('/', { replace: true });
+    }
+  }, [isLogged]);
 
   /**
    * @todo we should move it to a separate file

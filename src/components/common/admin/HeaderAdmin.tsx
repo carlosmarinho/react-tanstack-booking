@@ -16,7 +16,14 @@ const ContainerLogo = styled.div`
  * @todo we should move it to a separate file
  */
 const items1: MenuProps['items'] = [
-  { key: 'admin-text', label: 'Administrator' },
+  {
+    key: 'home-admin',
+    label: <Link to="/admin  ">Administrator</Link>,
+  },
+  {
+    key: 'home-site',
+    label: <Link to="/">Got to Website</Link>,
+  },
 ];
 
 /**
