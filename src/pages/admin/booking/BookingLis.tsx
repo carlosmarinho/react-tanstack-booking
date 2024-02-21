@@ -40,7 +40,7 @@ const BookingListAdmin = () => {
               }}
             >
               <h1>List Booking</h1>
-              <ListBooking />
+              <ListBooking isAdmin={true} />
             </div>
           </Content>
           <Footer />
