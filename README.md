@@ -114,6 +114,7 @@ I decided to use all those thechnology, then you could have a good idea how I ca
 ### @todo
 
 - If you ctrl+f the code base for @todo, you will find a lot of part of the code that needs to be improved.
+- And I'm also aware of code refactory, improvements and clean code, Like breaking some components into smaller one, use some destructuring and others, but the lack of time make me do some stuffs in a rush.
 
 ### Others
 
