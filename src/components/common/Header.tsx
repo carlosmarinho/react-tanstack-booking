@@ -5,6 +5,7 @@ import SearchBar, { ISearchBar } from './SearchBar';
 import { device } from '../../utils';
 import { FC, useContext } from 'react';
 import AuthContext from '../../context/auth';
+import { leftItems, rightItems } from '../../helpers/Menu';
 const { Header: HeaderAnt } = Layout;
 
 const StyledHeader = styled(HeaderAnt)<{
@@ -86,7 +87,7 @@ const Header: FC<IHeader> = ({
 
   const handleLogin = () => {
     /**
-     * @todo implement login, now here we are only mocking this api
+     * @todo implement login. Here we are only mocking this api
      */
     setTokens({
       id: 1,
@@ -98,29 +99,8 @@ const Header: FC<IHeader> = ({
   };
 
   /**
-   * @todo we should move it to a separate file
+   * @todo we should move it to the menu helper file inside helpers folder
    */
-  const leftItems = [
-    {
-      key: 'hotels',
-      label: <Link to="/hotels">Hotels</Link>,
-    },
-  ];
-  const rightItems = [
-    {
-      key: 'register',
-      label: <Link to="/register">Register</Link>,
-    },
-    {
-      key: 'signin',
-      label: (
-        <a href="#" onClick={handleLogin}>
-          Sign-In
-        </a>
-      ),
-    },
-  ];
-
   const rightItemsLogged = [
     {
       key: 'welcome-user',
@@ -172,7 +152,11 @@ const Header: FC<IHeader> = ({
           theme="dark"
           mode="horizontal"
           defaultSelectedKeys={['2']}
-          items={isLogged ? rightItemsLogged : rightItems}
+          items={
+            isLogged
+              ? rightItemsLogged
+              : rightItems(handleLogin)
+          }
           style={{
             flex: 1,
             minWidth: 0,
