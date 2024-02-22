@@ -55,6 +55,8 @@ Just keep in mind if you are access the admin page and are not logged (I'm using
 
 # Tecnologies used
 
+I have much more experience with Redux, than React Query and I also have experience with graphql client, but I decided to use Tanstack/react-query to practice and see the news about it.
+
 - React
 - Hooks
 - Context
@@ -68,7 +70,7 @@ Just keep in mind if you are access the admin page and are not logged (I'm using
 
 ## Development
 
-- I started developing the application and decided to use Tanstack React Query, Styled components. I started creating the admin part, only to do the booking and list, but didn't finish it. As time goes by, and I was lacking time I went to do the booking website, where you can search Hotels, and do the reservation. As I had basically 1 weekend and more 2 days to do all booking code, I didn't have time to work with TDD nor implemnent much unit test and E2E test.
+- I started developing the application using React, Tanstack React Query, Styled components, and for the backend I used Strapi. I started creating the admin (the frontend admin, not the backend using Strapi) part, only to do the booking and list, but didn't finish it. As time goes by, and I was lacking time I went to do the booking website, where you can search Hotels, and do the reservation. As I had basically 1 weekend and more 2 days to do all booking code, I didn't have time to work with TDD nor implemnent much unit test and E2E test.
 
 - Although I have implemented one custom hook (to do the booking) and one context for authentication, still there are rooms for improvements in this area, and I'll talk more about it in Refatory section
 
@@ -96,8 +98,9 @@ I decided to use all those thechnology, then you could have a good idea how I ca
 
 ### Test
 
-- I implemented only one unit test with react testing library and jest because of the lack of time
+- I have implemented only one unit test with react testing library and jest because of the lack of time
 - Increase the test coverage of the application
+- As we didn't create many tests yet, I didn't create any specific folder for better organization, as applications grows we can study a better structure for tests
 - I didn't have time to implement no E2E test, but I could use cypress or playright
 
 ### Login
