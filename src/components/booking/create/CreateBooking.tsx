@@ -96,17 +96,6 @@ const CreateBooking = () => {
     }
   }, [isSuccess]);
 
-  console.log(
-    '\n\n***\n Nights: : ',
-    night,
-    adults,
-    children,
-    checkOut,
-    isSuccess,
-    // room,
-    '\n***\n',
-  );
-
   const canReserve = () => {
     return (
       night > 0 &&

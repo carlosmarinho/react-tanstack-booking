@@ -105,13 +105,6 @@ const SearchResult: FC<ISearchBar> = ({
     return url;
   };
 
-  console.log(
-    '\n\n***\n valuessearch: ',
-    searchBarValues,
-    filteredUrl(),
-    '\n***\n',
-  );
-
   const ellipsis = true;
 
   const { isLoading, data: locations } = useQuery({
@@ -137,9 +130,6 @@ const SearchResult: FC<ISearchBar> = ({
           itemLayout="vertical"
           size="large"
           pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
             pageSize: 5,
           }}
           dataSource={locations}

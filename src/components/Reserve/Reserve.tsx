@@ -121,8 +121,6 @@ const Reserve = () => {
 
   const { data: location } = room?.location || {};
 
-  console.log('\n\n***\n adults : ', adults, '\n***\n');
-
   return (
     <>
       <h2>Reserve</h2>

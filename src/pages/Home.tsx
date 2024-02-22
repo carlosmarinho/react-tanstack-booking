@@ -27,7 +27,6 @@ const HomePage = () => {
   const [searchBar, setSearchBar] =
     useState<ISearchBarValues>();
   const onFinish = (values: ISearchBarValues) => {
-    console.log('Success:', values);
     setSearchBar(values);
   };
 
