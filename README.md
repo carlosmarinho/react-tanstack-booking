@@ -29,6 +29,30 @@ Run the following commands
 The last command (npm run servers) will run the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
+# URLs to access the aplication
+
+- I have published the frontend and the backend on Heroku, so you don't need to install the application to see it running, just access the following website
+
+## Website
+
+Just keep in mind if you are access the admin page and are not logged (I'm using a mock login, just click in Signin and you are going to be logged as Carlos) you are going to be redirect to the website home page
+
+### Production
+
+- Open [https://booking-react-ecbbb0313ef1.herokuapp.com/](https://booking-react-ecbbb0313ef1.herokuapp.com/)
+- Admin [https://booking-react-ecbbb0313ef1.herokuapp.com/admin](https://booking-react-ecbbb0313ef1.herokuapp.com/admin)
+
+### Local
+
+- Open [http://localhost:3000](http://localhost:3000)
+- Admin Open [http://localhost:3000](http://localhost:3000/admin)
+
+## Admin on Strapi
+
+### Production
+
+- https://booking-api-35c91862060b.herokuapp.com/admin/
+
 # Tecnologies used
 
 - React
