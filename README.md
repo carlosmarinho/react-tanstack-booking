@@ -103,6 +103,10 @@ I decided to use all those thechnology, then you could have a good idea how I ca
 - As we didn't create many tests yet, I didn't create any specific folder for better organization, as applications grows we can study a better structure for tests
 - I didn't have time to implement no E2E test, but I could use cypress or playright
 
+### Strapi Images
+
+- We need to find another way to store the image. Heroku constantly restart the app, I think maybe one restart a day, when heroku restart we lost the image that was uploaded from strapi to heroku's file syste, for this reason you can see some broken images on the website.
+
 ### Login
 
 - In this moment we only have a mocked login, when you click on the login link we don't redirect the user to a login page, where can add login information and do the login
