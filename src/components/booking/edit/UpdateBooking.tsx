@@ -21,6 +21,7 @@ import { useReserve } from '../../../hooks/useReserve';
 import { useParams } from 'react-router-dom';
 import { Ibooking } from '../IBooking';
 import dayjs from 'dayjs';
+import { validateMaxGuests } from '../helpers';
 
 /**
  * @todo use the same form as creating booking
@@ -54,8 +55,8 @@ const UpdateBooking = () => {
     setCheckOut,
     night,
     setNight,
-    // checkIn,
-    // checkOut,
+    roomSelected,
+    setRoomSelected,
   } = useReserve({
     roomId,
     strCheckIn: checkIn?.format('YYYY/MM/DD'),
@@ -120,6 +121,16 @@ const UpdateBooking = () => {
     });
 
   useEffect(() => {
+    if (locationId && roomId) {
+      setRoomSelected(
+        locations
+          ?.find((location) => location.id === locationId)
+          ?.rooms?.data.find((r) => r.id === roomId),
+      );
+    }
+  }, [locationId, roomId]);
+
+  useEffect(() => {
     if (isSuccess) {
       form.resetFields();
     }
@@ -139,7 +150,9 @@ const UpdateBooking = () => {
     return (
       night > 0 &&
       parseInt(adults) + parseInt(children) > 0 &&
-      // parseInt(adults) + parseInt(children) <= room &&
+      roomSelected &&
+      parseInt(adults) + parseInt(children) <=
+        roomSelected?.guests &&
       !isSuccess
     );
   };
@@ -319,7 +332,19 @@ const UpdateBooking = () => {
           <Form.Item
             name="children"
             label="Children"
-            rules={[{ required: true }]}
+            rules={[
+              { required: true },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  return validateMaxGuests({
+                    getFieldValue,
+                    field: 'adults',
+                    value,
+                    roomSelected,
+                  });
+                },
+              }),
+            ]}
           >
             <Select
               placeholder="Quantity Children"

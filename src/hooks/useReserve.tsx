@@ -5,6 +5,7 @@ import { ICreateBooking } from '../components/booking/create/ICreateBooking';
 import { sendApiRequest } from '../helpers/sendApiRequest';
 import { IDoReserve } from '../components/booking/IBooking';
 import dayjs, { Dayjs } from 'dayjs';
+import { IRoom } from '../components/room/IRoom';
 
 interface IUseReserve {
   roomId: string | undefined;
@@ -21,6 +22,9 @@ export function useReserve({
   const [successMessage, setSuccessMessage] = useState('');
   const { isLogged, authTokens } = useContext(AuthContext);
   const [night, setNight] = useState(0);
+  const [roomSelected, setRoomSelected] = useState<
+    IRoom | undefined
+  >();
   const [checkIn, setCheckIn] = useState<Dayjs | null>(
     strCheckIn ? dayjs(strCheckIn) : null,
   );
@@ -110,6 +114,8 @@ export function useReserve({
     checkOut,
     night,
     setNight,
+    roomSelected,
+    setRoomSelected,
     doReservation,
   };
 }

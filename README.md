@@ -106,6 +106,7 @@ I decided to use all those thechnology, then you could have a good idea how I ca
 ### Login
 
 - In this moment we only have a mocked login, when you click on the login link we don't redirect the user to a login page, where can add login information and do the login
+- We are using the local storage to simulate the login, so if you just reload the page, you are going to lose your login session.
 
 ### Strapi
 

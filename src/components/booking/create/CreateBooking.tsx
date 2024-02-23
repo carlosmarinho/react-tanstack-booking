@@ -19,10 +19,10 @@ import { ICity } from '../../city/ICity';
 import { IRoom } from '../../room/IRoom';
 import { adultsArray, childrenArray } from '../../../utils';
 import { useReserve } from '../../../hooks/useReserve';
+import { validateMaxGuests } from '../helpers';
 
 const CreateBooking = () => {
   const [form] = Form.useForm();
-
   const values = Form.useWatch([], form);
   const {
     cityId,
@@ -47,8 +47,8 @@ const CreateBooking = () => {
     setCheckIn,
     setCheckOut,
     night,
-    // checkIn,
-    // checkOut,
+    roomSelected,
+    setRoomSelected,
     doReservation,
   } = useReserve({
     roomId,
@@ -89,6 +89,16 @@ const CreateBooking = () => {
       },
       enabled: !!cityId,
     });
+
+  useEffect(() => {
+    if (locationId && roomId) {
+      setRoomSelected(
+        locations
+          ?.find((location) => location.id === locationId)
+          ?.rooms?.data.find((r) => r.id === roomId),
+      );
+    }
+  }, [locationId, roomId]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -258,7 +268,19 @@ const CreateBooking = () => {
         <Form.Item
           name="adults"
           label="Adults"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                return validateMaxGuests({
+                  getFieldValue,
+                  field: 'children',
+                  value,
+                  roomSelected,
+                });
+              },
+            }),
+          ]}
         >
           <Select
             placeholder="Quantity Adult"
@@ -276,7 +298,19 @@ const CreateBooking = () => {
         <Form.Item
           name="children"
           label="Children"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                return validateMaxGuests({
+                  getFieldValue,
+                  field: 'adults',
+                  value,
+                  roomSelected,
+                });
+              },
+            }),
+          ]}
         >
           <Select
             placeholder="Quantity Children"

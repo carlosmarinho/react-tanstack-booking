@@ -50,6 +50,10 @@ const LabelTo = styled(Text)`
 
 const Reserve = () => {
   const { isLogged } = useContext(AuthContext);
+  const [
+    showTotalGuestsMessageError,
+    setShowTotalGuestsMessageError,
+  ] = useState(false);
 
   const ellipsis = true;
   const [totalValue, setTotalValue] = useState(0);
@@ -76,7 +80,11 @@ const Reserve = () => {
   } = useReserve({ roomId, strCheckIn, strCheckOut });
 
   const [totalGuests, setTotalGuests] = useState(
-    parseInt(strAdults) + parseInt(strChildren),
+    strAdults === ''
+      ? 0
+      : parseInt(strAdults) + strChildren === ''
+        ? 0
+        : parseInt(strChildren),
   );
 
   const [adults, setAdults] = useState(strAdults);
@@ -102,10 +110,24 @@ const Reserve = () => {
 
   useEffect(() => {
     if (adults && room?.rate) {
-      setTotalGuests(parseInt(adults) + parseInt(children));
+      setTotalGuests(
+        parseInt(adults) +
+          (children === '' ? 0 : parseInt(children)),
+      );
       setTotalValue(room.rate ? room.rate * night : 0);
     }
   }, [adults, children]);
+
+  useEffect(() => {
+    if (
+      room?.guests &&
+      parseInt(adults) + parseInt(children) > room?.guests
+    ) {
+      setShowTotalGuestsMessageError(true);
+    } else {
+      setShowTotalGuestsMessageError(false);
+    }
+  }, [totalGuests]);
 
   const canReserve = () => {
     return (
@@ -278,7 +300,15 @@ const Reserve = () => {
                   }
                 />
               </li>
-              <li>Total Guests: {totalGuests}</li>
+              <li>
+                Total Guests: {totalGuests}{' '}
+                {showTotalGuestsMessageError && (
+                  <Text type="danger">
+                    - <strong>Total Guests</strong>{' '}
+                    {`shouldn't be bigger than ${totalGuests}`}
+                  </Text>
+                )}
+              </li>
               <li>
                 Price for 1 Night at this room: $
                 {room?.rate}
