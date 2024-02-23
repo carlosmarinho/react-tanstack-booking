@@ -78,7 +78,7 @@ const UpdateBooking = () => {
   const initialValues = {
     city: booking?.data.location?.data.city?.data.id,
     locationId: booking?.data.location?.data.id,
-    room: booking?.data.room?.data.id,
+    roomId: booking?.data.room?.data.id,
     user: booking?.data.userId,
     checkIn: dayjs(booking?.data.startAt),
     checkOut: dayjs(booking?.data.endAt),
