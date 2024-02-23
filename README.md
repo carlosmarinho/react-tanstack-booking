@@ -105,7 +105,7 @@ I decided to use all those thechnology, then you could have a good idea how I ca
 
 ### Strapi Images
 
-- We need to find another way to store the image. Heroku constantly restart the app, I think maybe one restart a day, when heroku restart we lost the image that was uploaded from strapi to heroku's file syste, for this reason you can see some broken images on the website.
+- We need to find another way to store the image. Heroku constantly restart the app, I think maybe one restart a day, when heroku restart we lost the image that was uploaded from strapi to heroku's file syste, for this reason you can see some hotels and rooms with the default images. The default images will be shown instead of broken images
 
 ### Login
 

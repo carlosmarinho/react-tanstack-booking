@@ -207,6 +207,11 @@ const ListBooking: FC<IListBooking> = ({
                   width={200}
                   height={200}
                   alt={`Location: ${item.location.data?.name}`}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src =
+                      '/location-default.jpg';
+                  }}
                   src={
                     item.location.data?.featuredImage
                       ? getIMageFromData(

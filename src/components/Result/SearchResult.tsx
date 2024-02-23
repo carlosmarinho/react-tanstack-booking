@@ -180,6 +180,13 @@ const SearchResult: FC<ISearchBar> = ({
                             width={60}
                             height={60}
                             alt={`Room: ${room.name}`}
+                            onError={({
+                              currentTarget,
+                            }) => {
+                              currentTarget.onerror = null; // prevents looping
+                              currentTarget.src =
+                                '/bed.png';
+                            }}
                             src={
                               room.featureImage
                                 ? getIMageFromData(

@@ -155,6 +155,10 @@ const Reserve = () => {
         <StyledCard
           cover={
             <img
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null; // prevents looping
+                currentTarget.src = '/location-default.jpg';
+              }}
               alt={`Location ${location.name}`}
               src={
                 location.featuredImage.data
@@ -217,6 +221,10 @@ const Reserve = () => {
           </h4>
           <RoomWrapper>
             <img
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null; // prevents looping
+                currentTarget.src = '/bed.jpg';
+              }}
               src={
                 room?.featureImage
                   ? getIMageFromData(

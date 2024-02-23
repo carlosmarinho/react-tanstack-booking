@@ -42,6 +42,10 @@ const RightCard: FC<IRightCard> = ({
         </div>
       </TopIMage>
       <img
+        onError={({ currentTarget }) => {
+          currentTarget.onerror = null; // prevents looping
+          currentTarget.src = '/location-default.jpg';
+        }}
         width={300}
         alt={`Image Location - ${name}`}
         src={
